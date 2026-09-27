@@ -32,6 +32,8 @@ Building regenerates `vendor/femtovg/`; make changes in `patches/`, not that dir
 
 ## Results and methodology
 
+- [Metal cache-control probe](results/metal-cache-control-probe/README.md): observed first-use effects of the undocumented cache-size override.
+
 - [Full standalone rerun](results/reproduction-2026-09-27/README.md): current results, exact count checks, timing differences, and median confidence intervals.
 
 - [Direct comparison](results/pr343/README.md): 240 GPU processes covering working sets of 63, 64, 65, 80, and 129 states plus mixed rendering operations. [Methodology](docs/comparison.md).

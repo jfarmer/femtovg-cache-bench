@@ -1,0 +1,74 @@
+{
+  "upstream/system": {
+    "runs": 3,
+    "cold_completed_ms": [
+      14.481582999999999,
+      14.344000000000001,
+      14.348583999999999
+    ],
+    "measured_completed_median_ms": [
+      5.7218125,
+      5.755187,
+      6.499312
+    ],
+    "measured_cpu_median_ms": [
+      5.5293545,
+      5.544604,
+      6.2771665
+    ]
+  },
+  "upstream/size-zero": {
+    "runs": 3,
+    "cold_completed_ms": [
+      503.70545899999996,
+      486.536792,
+      487.148167
+    ],
+    "measured_completed_median_ms": [
+      5.7829584999999994,
+      5.7620625,
+      5.662896
+    ],
+    "measured_cpu_median_ms": [
+      5.461125,
+      5.541625,
+      5.451791500000001
+    ]
+  },
+  "strict-lru128/system": {
+    "runs": 3,
+    "cold_completed_ms": [
+      15.426874999999999,
+      14.548709,
+      14.770708
+    ],
+    "measured_completed_median_ms": [
+      0.6343955,
+      0.621521,
+      0.3463125
+    ],
+    "measured_cpu_median_ms": [
+      0.14285399999999998,
+      0.096438,
+      0.08220849999999999
+    ]
+  },
+  "strict-lru128/size-zero": {
+    "runs": 3,
+    "cold_completed_ms": [
+      486.546333,
+      487.058667,
+      486.611042
+    ],
+    "measured_completed_median_ms": [
+      0.3707705,
+      0.3838125,
+      0.48731250000000004
+    ],
+    "measured_cpu_median_ms": [
+      0.0885205,
+      0.0810415,
+      0.1012915
+    ]
+  }
+}

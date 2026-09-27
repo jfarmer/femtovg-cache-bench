@@ -1,0 +1,74 @@
+{
+  "purpose": "diagnostic control probe, not a policy performance comparison",
+  "platform": "macOS-26.6.2-arm64-arm-64bit",
+  "rustc": "rustc 1.96.0 (ac68faa20 2026-05-25)\nbinary: rustc\ncommit-hash: ac68faa20c58cbccd01ee7208bf3b6e93a7d7f96\ncommit-date: 2026-05-25\nhost: aarch64-apple-darwin\nrelease: 1.96.0\nLLVM version: 22.1.2\n",
+  "policies": [
+    "upstream",
+    "strict-lru128"
+  ],
+  "states": 17,
+  "measured_frames": 2,
+  "rounds": 3,
+  "settings": {
+    "system": null,
+    "size-zero": "0"
+  },
+  "driver_cache_reset": false,
+  "binaries": {
+    "upstream": {
+      "binary_sha256": "0742707d1db033cce476d42d252241436a2f7b82aca0309e22e3acdc52539d23",
+      "renderer_sha256": "6ce7d1e98487306081f66ee007a25032770822f230956720149937a255453129",
+      "inputs": {
+        "Cargo.lock": "27924f3a0b5a1d0d1da4404b4fc6d36b98d12351bfc825198b6ee31042de2cf8",
+        "Cargo.toml": "f7a6c1d451585c9e0088035c4416aa9a844182cab78a91e70a535e4b8aeba08b",
+        "crates/cache-policy/Cargo.toml": "ec9d583d4ffade642d903aa757265e412583d705ca23c052722fcfc5106b372a",
+        "crates/cache-policy/src/lib.rs": "6eac43e3bb0699a9b2924621cab416160b16879af3c10d3b16f275f70bea8571",
+        "patches/flush-lru64.patch": "e70fa850d6a5c22abe746f620a33430d0c57566e7c6518472499ae3ddabf64de",
+        "patches/instrumentation.patch": "383896b24835bcdbfe2f801e47cfb9259e1eea5cd7eb19c1180228af6de40159",
+        "patches/policy-study.patch": "9dd2910762c25c8774ce63c3c14c99805b5ec7801954c5bfb7893f8067e63c4e",
+        "patches/pr343.patch": "0e8169a54b5faf2e8e311a08de5d0c4d19988f5a202b7ba0845f0bf8dceceb8f",
+        "patches/strict-lru128.patch": "2aa9010e9f91ba94612674a100db8ce16e1d92c9f3d5cfd0d834df411018cebc",
+        "scripts/check.py": "e0808eb0ca6dcfbbcbff6c39f080dbe24a1dd470c8ac5662fdb051a27f10bec0",
+        "scripts/common.py": "d204df1a3a5fcab44116ec7a367ec8252c97f187a38a3ba05b72aeedbb0d3f5d",
+        "scripts/compare-runs.py": "3b7d44a5467143934cedd2558515ce0f2d182e9d0ea6948b7423972f7ec01434",
+        "scripts/femtovg-cache-synthetic.py": "b9be49c9321138be64afa9819068c1fba8ea66e881d81d899976bc07e062c1b2",
+        "scripts/femtovg-policy-study.py": "96c1c1e7da228cb73cec741f3572929c269ca2c64608af32520b2f53896d2775",
+        "scripts/probe-metal-cache.py": "de1e35d8d5eaffdf54cfa3c8fc249ea47052e7b98aff3e0e1bb823a56befbb80",
+        "scripts/verify-results.py": "2edf6cbdbb60f895e6bd9dcd382e15e590ca631b0fe83cb527364c4f1579d3b7",
+        "src/bin/policy-study.rs": "67946119ddb96f35245268ae733d8be36b267587411518a2bd9d6c2366588fa9",
+        "src/main.rs": "af672655ade278fbe553b86eb31e0154f9325abc25f138a47643aa4c8e4a28e2",
+        "src/study.rs": "f84bd4b9c0cd87a94afe9f554d8c25b4bc7ee77f46b1f7e9fb4c61af278206be",
+        "vendor/femtovg-9f2523b.tar.gz": "d01b5ae2d028f7d4e01d310d95a984337742e398bee944a1935f6ea7b1f42225",
+        "vendor/femtovg.json": "152eff5a668524ce7938c8bc6a8178c72cb0d766c88e309ee978c897d371fb1d"
+      }
+    },
+    "strict-lru128": {
+      "binary_sha256": "df45d00aea913c2ae9519689996b32c6993674a0beb031027441b178e43b5484",
+      "renderer_sha256": "6f7821e4ff132505f477c935c30b1ed7c55f7f446fd298c6b0828c319716c631",
+      "inputs": {
+        "Cargo.lock": "27924f3a0b5a1d0d1da4404b4fc6d36b98d12351bfc825198b6ee31042de2cf8",
+        "Cargo.toml": "f7a6c1d451585c9e0088035c4416aa9a844182cab78a91e70a535e4b8aeba08b",
+        "crates/cache-policy/Cargo.toml": "ec9d583d4ffade642d903aa757265e412583d705ca23c052722fcfc5106b372a",
+        "crates/cache-policy/src/lib.rs": "6eac43e3bb0699a9b2924621cab416160b16879af3c10d3b16f275f70bea8571",
+        "patches/flush-lru64.patch": "e70fa850d6a5c22abe746f620a33430d0c57566e7c6518472499ae3ddabf64de",
+        "patches/instrumentation.patch": "383896b24835bcdbfe2f801e47cfb9259e1eea5cd7eb19c1180228af6de40159",
+        "patches/policy-study.patch": "9dd2910762c25c8774ce63c3c14c99805b5ec7801954c5bfb7893f8067e63c4e",
+        "patches/pr343.patch": "0e8169a54b5faf2e8e311a08de5d0c4d19988f5a202b7ba0845f0bf8dceceb8f",
+        "patches/strict-lru128.patch": "2aa9010e9f91ba94612674a100db8ce16e1d92c9f3d5cfd0d834df411018cebc",
+        "scripts/check.py": "e0808eb0ca6dcfbbcbff6c39f080dbe24a1dd470c8ac5662fdb051a27f10bec0",
+        "scripts/common.py": "d204df1a3a5fcab44116ec7a367ec8252c97f187a38a3ba05b72aeedbb0d3f5d",
+        "scripts/compare-runs.py": "3b7d44a5467143934cedd2558515ce0f2d182e9d0ea6948b7423972f7ec01434",
+        "scripts/femtovg-cache-synthetic.py": "b9be49c9321138be64afa9819068c1fba8ea66e881d81d899976bc07e062c1b2",
+        "scripts/femtovg-policy-study.py": "96c1c1e7da228cb73cec741f3572929c269ca2c64608af32520b2f53896d2775",
+        "scripts/probe-metal-cache.py": "de1e35d8d5eaffdf54cfa3c8fc249ea47052e7b98aff3e0e1bb823a56befbb80",
+        "scripts/verify-results.py": "2edf6cbdbb60f895e6bd9dcd382e15e590ca631b0fe83cb527364c4f1579d3b7",
+        "src/bin/policy-study.rs": "67946119ddb96f35245268ae733d8be36b267587411518a2bd9d6c2366588fa9",
+        "src/main.rs": "af672655ade278fbe553b86eb31e0154f9325abc25f138a47643aa4c8e4a28e2",
+        "src/study.rs": "f84bd4b9c0cd87a94afe9f554d8c25b4bc7ee77f46b1f7e9fb4c61af278206be",
+        "vendor/femtovg-9f2523b.tar.gz": "d01b5ae2d028f7d4e01d310d95a984337742e398bee944a1935f6ea7b1f42225",
+        "vendor/femtovg.json": "152eff5a668524ce7938c8bc6a8178c72cb0d766c88e309ee978c897d371fb1d"
+      }
+    }
+  },
+  "script_sha256": "de1e35d8d5eaffdf54cfa3c8fc249ea47052e7b98aff3e0e1bb823a56befbb80"
+}
