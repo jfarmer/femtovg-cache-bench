@@ -104,3 +104,5 @@ driver/compiler memory. No pixel-reference comparisons are performed.
 The flush-aware policy can exceed its target, so a low miss count must be read
 alongside residency and memory. A never-repeated scan has compulsory misses even
 with unlimited retention; increasing capacity cannot eliminate those misses.
+
+New GPU metadata also records the inherited `MTL_SHADER_CACHE_SIZE` setting and that the runner performs no driver-cache reset. See [cache-control provenance](comparison.md#cache-control-provenance) for the limits of this record and the historical metadata gap.

@@ -105,6 +105,8 @@ def main():
     for policy in POLICIES:
         verify_build(provenance[policy], BINS / policy)
     metadata = {"runs": args.runs, "frames": args.frames, "platform": platform.platform(),
+                "inherited_environment": {"MTL_SHADER_CACHE_SIZE": os.environ.get("MTL_SHADER_CACHE_SIZE")},
+                "driver_cache_reset_by_runner": False,
                 "rustc": subprocess.check_output(["rustc", "-Vv"], text=True),
                 "archive_sha256": sha256(ARCHIVE),
                 "lock_sha256": sha256(BENCH / "Cargo.lock"), "binaries": provenance}

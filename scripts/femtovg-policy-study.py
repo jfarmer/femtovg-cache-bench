@@ -146,7 +146,9 @@ def main():
     if dest.exists():
         parser.error(f"refusing to overwrite {dest}")
     metadata = {"runs": args.runs, "frames": 100, "cases": CASES, "policies": POLICIES,
-                "platform": platform.platform(), "rustc": subprocess.check_output(["rustc", "-Vv"], text=True),
+                "platform": platform.platform(),
+                "inherited_environment": {"MTL_SHADER_CACHE_SIZE": os.environ.get("MTL_SHADER_CACHE_SIZE")},
+                "driver_cache_reset_by_runner": False, "rustc": subprocess.check_output(["rustc", "-Vv"], text=True),
                 "build": provenance, "binary_sha256": digest(BINARY), "lock_sha256": digest(BENCH / "Cargo.lock"),
                 "archive_sha256": digest(ARCHIVE),
                 "sources": {str(p.relative_to(ROOT)): digest(p) for p in sorted(BENCH.rglob("*.rs"))

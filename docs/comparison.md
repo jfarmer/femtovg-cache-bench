@@ -93,3 +93,9 @@ archive and lock hashes, renderer hashes, and executable hashes.
 Results apply to these synthetic sequences. In particular, 128 entries gives the
 app policy a capacity advantage over 64-entry policies. A faster synthetic result
 does not imply a faster app startup when its working set already fits both caches.
+
+## Cache-control provenance
+
+New GPU-run metadata records the inherited `MTL_SHADER_CACHE_SIZE` value (`null` means unset) and states that the runner does not reset driver caches. The runner does not change this environment variable. A recorded value is an input setting, not verification of Metal's internal cache behavior; `MTL_SHADER_CACHE_SIZE=0` is an undocumented disable request, not a demonstrated global cache reset.
+
+The historical measurements and the full rerun at commit `4b91f93` predate this metadata field. Their inherited setting was not recorded and cannot be reconstructed from those files. The synthetic runners did not themselves set it or clear caches. Treat first-process timings as process-cold, not guaranteed driver-cold.
