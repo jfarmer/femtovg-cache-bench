@@ -187,165 +187,162 @@ def main():
     (analysis / "cold-control.md").write_text("\n".join(cold_lines)+"\n")
     (analysis / "evidence.json").write_text(json.dumps(evidence, indent=2, sort_keys=True)+"\n")
     link = args.data.as_posix()
-    adapter_name = a[0]["adapter"].split('name: "')[1].split('"')[0]
-    backend = a[0]["adapter"].split("backend: ")[1].split(",")[0].split("}")[0].strip()
-    boundary = direct_summary["65/flush-lru64"]["medians"]
-    sweep = direct_summary["65/pr343"]["medians"]
+    adapter = a[0]['adapter'].split('name: "')[1].split('"')[0]
+    backend = a[0]['adapter'].split('backend: ')[1].split(',')[0].split('}')[0].strip()
+    before = direct_summary['65/pr343']['medians']
+    after = direct_summary['65/flush-lru64']['medians']
     report = [
-        "# FemtoVG WGPU pipeline-cache evaluation", "",
-        "The proposed cache avoids rebuilding an entire working set after a small intervening flush. "
-        f"At 65 pipeline states, it creates **{boundary['created_per_frame']:.0f} pipelines per frame instead of "
-        f"{sweep['created_per_frame']:.0f}** with [PR #343](https://github.com/femtovg/femtovg/pull/343). "
-        f"Median completed-frame time falls from **{sweep['completed_p50_ms']:.2f} to {boundary['completed_p50_ms']:.2f} ms** on {adapter_name}/{backend}.", "",
-        "The tradeoff is a soft capacity target: pipelines used by one flush remain protected even above 64 entries. "
-        "These synthetic tests show the benefit and its limits. They do not estimate application-wide speedups or establish an optimal capacity.", "",
-        "## What changes", "",
-        "| Implementation | Eviction after a flush |",
-        "| --- | --- |",
-        "| Upstream | Remove every pipeline unused by that flush. |",
-        "| #343 | Apply that sweep only when the cache exceeds 64 entries. |",
-        "| Proposed | Above 64 entries, remove the oldest pipelines unused by that flush. |", "",
-        "A clear-only flush can therefore discard the preceding draw's pipelines on upstream and, above capacity, on #343. "
-        "The proposal trims older entries while preserving the current flush's working set. Recency is measured in flushes; ties within a flush have no specified order.", "",
-        f"The direct tests use the actual PR renderer at `{meta['source']['candidate']['commit'][:7]}`, based on upstream "
-        f"`{meta['source']['base']['commit'][:7]}`. The build verifies the renderer before adding counters. "
-        "All variants share the base, dependency lockfile, features and release settings. "
-        "[Full source pins and checksums](vendor/report-source.json).", "",
-        "## Direct comparison", "",
-        "The proposal reduces repeated creation above #343's threshold; it does not eliminate capacity limits. "
-        "At 65, 80 and 129 states, #343 recreates the whole set each frame. The proposal recreates 2, 17 and 66 pipelines respectively. "
-        "Strict LRU 128 holds the smaller sets but recreates all 129 pipelines in the cyclic 129-state case.", "",
-        "Each numbered workload draws N−1 blend states, then issues a separate clear flush. N includes the clear pipeline. "
-        "The mixed workload alternates glyph-atlas, clipped-layer, blur, screen and clear operations. "
-        "Strict LRU 128 has twice the proposal's retention target.", "",
-        "Times below are milliseconds, aggregated over ten processes per case. Completed time includes CPU work and the GPU completion wait. "
-        "Bracketed values are intervals for the median under the assumptions described in [Measurement and uncertainty](#measurement-and-uncertainty).", "",
-        "<details>", "<summary>All direct results: creations, median intervals and p95</summary>", "",
-        "| Workload | Policy | Creations/frame | Median [interval] (ms) | p95 (ms) |",
-        "| --- | --- | ---: | ---: | ---: |",
+        '# FemtoVG WGPU pipeline-cache evaluation', '',
+        '**The proposal prevents small flushes from discarding an entire cached working set.**', '',
+        f"At 65 states, pipeline creations fall from **{before['created_per_frame']:.0f} to {after['created_per_frame']:.0f} per frame** "
+        f"and median frame time from **{before['completed_p50_ms']:.2f} to {after['completed_p50_ms']:.2f} ms**, "
+        f'compared with [PR #343](https://github.com/femtovg/femtovg/pull/343) on {adapter}/{backend}.', '',
+        '**Tradeoff:** 64 entries is a retention target. A single flush can retain more. These synthetic results do not predict application-wide speedups.', '',
+        '## Cache behavior', '',
+        '| Implementation | Eviction after a flush |', '| --- | --- |',
+        '| Upstream | Remove all pipelines unused by that flush. |',
+        '| #343 | Do the same, but only above 64 entries. |',
+        '| Proposed | Above 64 entries, remove oldest unused pipelines until the target is reached. Protect pipelines used by the current flush. |', '',
+        'The proposal measures recency in flushes. Entries last used in the same flush have no specified eviction order.', '',
+        '## Direct comparison', '',
+        '**Above 64 states, the proposal rebuilds fewer pipelines than #343.**', '',
+        '| States | #343 creations/frame | Proposed creations/frame |', '| ---: | ---: | ---: |',
     ]
-    for scenario in ("63", "64", "65", "80", "129", "mixed"):
+    for scenario in ('65', '80', '129'):
+        before = direct_summary[f'{scenario}/pr343']['medians']['created_per_frame']
+        after = direct_summary[f'{scenario}/flush-lru64']['medians']['created_per_frame']
+        report.append(f'| {scenario} | {before:.0f} | {after:.0f} |')
+    report += ['', 'Strict LRU 128 avoids rebuilding the smaller sets, but rebuilds all 129 pipelines when cyclic access exceeds its capacity.', '',
+               '<details>', '<summary>Full results and workload definitions</summary>', '',
+               '| Workload | Operations |', '| --- | --- |',
+               '| Numbered | N−1 blend states, followed by a separate clear flush. N includes the clear pipeline. |',
+               '| Mixed | Glyph-atlas, clipped-layer, blur, screen and clear operations. |', '',
+               'Strict LRU 128 has twice the proposed retention target.', '',
+               'Times include CPU work and the GPU completion wait. Each row summarizes ten processes. Brackets give median intervals; see [measurement details](#measurement-and-validation).', '',
+               '| Workload | Policy | Creations/frame | Median [interval] (ms) | p95 (ms) |',
+               '| --- | --- | ---: | ---: | ---: |']
+    for scenario in ('63', '64', '65', '80', '129', 'mixed'):
         for policy in DIRECT_POLICIES:
-            case = f"{scenario}/{policy}"
-            m = direct_summary[case]["medians"]
-            ci = evidence["median_intervals"][f"direct/{case}"]
-            label = {"upstream": "Upstream", "pr343": "#343", "flush-lru64": "Proposed 64", "strict-lru128": "Strict LRU 128"}[policy]
+            case = f'{scenario}/{policy}'
+            m = direct_summary[case]['medians']
+            ci = evidence['median_intervals'][f'direct/{case}']
+            label = {'upstream': 'Upstream', 'pr343': '#343', 'flush-lru64': 'Proposed 64', 'strict-lru128': 'Strict LRU 128'}[policy]
             report.append(f"| {scenario} | {label} | {m['created_per_frame']:.0f} | {ci['median']:.3f} [{ci['lower']:.3f}, {ci['upper']:.3f}] | {m['completed_p95_ms']:.3f} |")
-    report += ["", "</details>", "",
-               f"[Complete tables, including p99 and within-round ratios]({link}/analysis/tables.md). "
-               "Ratios compare process medians within the same round; they are not ratios of aggregate medians.", ""]
+    report += ['', f'[Additional quantiles and within-round ratios]({link}/analysis/tables.md). Ratios pair process medians within a round; they are not ratios of aggregate medians.', '', '</details>', '']
 
-    confirmation = ROOT / "results/confirmation-d5241b9"
-    if (confirmation / "metadata.json").exists():
-        confirmation_meta = json.loads((confirmation / "metadata.json").read_text())
-        if confirmation_meta["source"] == meta["source"]:
-            repeat = json.loads((confirmation / "summary.json").read_text())
-            paired = json.loads((confirmation / "paired-ratios.json").read_text())
-            report += ["## Randomized confirmation", "",
-                       f"**At 65 states, the proposal was faster in {sum(value < 1 for value in paired['65'])} of {len(paired['65'])} pairs.** "
-                       "A separate run compared the proposal with #343 in twenty adjacent pairs per workload. "
-                       "Policy order was randomized and balanced before measurement.", "",
-                       "| Workload | #343 median / p95 (ms) | Proposed median / p95 (ms) |",
-                       "| --- | ---: | ---: |"]
-            for case in ("64", "65", "mixed"):
-                before = repeat[f"{case}/pr343"]["medians"]
-                after = repeat[f"{case}/flush-lru64"]["medians"]
-                report.append(f"| {case} | {before['completed_p50_ms']:.3f} / {before['completed_p95_ms']:.3f} | {after['completed_p50_ms']:.3f} / {after['completed_p95_ms']:.3f} |")
-            report += ["",
-                       f"Median within-pair proposed/#343 ratios are {statistics.median(paired['64']):.3f} at 64 states and "
-                       f"{statistics.median(paired['mixed']):.3f} for mixed operations. "
-                       "Those cases show no obvious regression; they do not establish statistical equivalence.", "",
-                       "All 120 measured and 12 priming runs match the original creation/residency profiles. "
-                       "The repeat is reported separately. "
-                       "[Protocol, individual pairs and raw data](results/confirmation-d5241b9/README.md).", ""]
+    confirmation = ROOT / 'results/confirmation-d5241b9'
+    confirmed = False
+    if (confirmation / 'metadata.json').exists():
+        confirmation_meta = json.loads((confirmation / 'metadata.json').read_text())
+        confirmed = confirmation_meta['source'] == meta['source']
+    if confirmed:
+        repeat = json.loads((confirmation / 'summary.json').read_text())
+        paired = json.loads((confirmation / 'paired-ratios.json').read_text())
+        report += ['## Confirmation', '',
+                   f"**The proposal was faster in all {len(paired['65'])} randomized pairs at 65 states.**" if all(value < 1 for value in paired['65']) else
+                   f"**The proposal was faster in {sum(value < 1 for value in paired['65'])} of {len(paired['65'])} randomized pairs at 65 states.**", '',
+                   '| Workload | #343 median / p95 (ms) | Proposed median / p95 (ms) |', '| --- | ---: | ---: |']
+        for case in ('64', '65', 'mixed'):
+            before = repeat[f'{case}/pr343']['medians']
+            after = repeat[f'{case}/flush-lru64']['medians']
+            report.append(f"| {case} | {before['completed_p50_ms']:.3f} / {before['completed_p95_ms']:.3f} | {after['completed_p50_ms']:.3f} / {after['completed_p95_ms']:.3f} |")
+        report += ['', 'At 64 states and in the mixed workload, paired results show no obvious regression. Statistical equivalence was not tested.', '',
+                   '<details>', '<summary>Confirmation protocol and paired results</summary>', '',
+                   '- Twenty adjacent pairs per workload, with randomized, balanced policy order fixed before measurement.',
+                   f"- Median proposed/#343 paired ratios: {statistics.median(paired['64']):.3f} at 64 states; {statistics.median(paired['mixed']):.3f} for mixed operations.",
+                   '- All 120 measured and 12 priming runs match the primary creation/residency profiles. No runs excluded.',
+                   '- Results remain separate from the primary estimates.', '',
+                   '[Full protocol, individual pairs and raw data](results/confirmation-d5241b9/README.md).', '', '</details>', '']
 
-    report += ["## Other retention policies", "",
-               "No policy wins across all tested access patterns. The main tradeoffs are capacity, scan resistance and sensitivity to flush boundaries.", "",
-               "| Policy | Observed tradeoff |", "| --- | --- |",
-               "| Flush-aware | Reuses a large flush's working set by exceeding the target. Splitting the same requests across smaller flushes can lose that advantage. |",
-               "| Strict LRU (`lru` crate) | Enforces an entry limit. Cyclic access just beyond capacity can miss on every request. |",
-               "| S3-FIFO | Protects hot entries during scans, but takes longer to adapt to switching sets and needs admission/ghost metadata. |",
-               "| Retain everything | Shows available reuse, with continuing growth under streams of new states. |", "",
-               "**The study's `flush-lru` is a model variant, not the exact PR implementation.** "
-               "It orders accesses within a flush; the PR uses flush stamps. The direct comparison and confirmation above test the actual PR.", "",
-               "W is workload scale and C is capacity. Cycle/shuffle-plus uses W+1 states. Hot-scan interleaves a hot set with new states; switch alternates disjoint sets. "
-               "Batch-single and batch-split issue the same requests with different flush boundaries. "
-               "The CPU sweep additionally varies capacity from 32 to 512 for each fixed trace.", "",
-               "<details>", "<summary>All policy-study results: timing, creation counts and memory</summary>", "",
-               "| Case / policy | Creations/frame | Median (ms) | p95 (ms) | Peak entries | Peak RSS (MiB) |",
-               "| --- | ---: | ---: | ---: | ---: | ---: |"]
+    report += ['## Other policies', '',
+               '**The choice remains open: reuse, memory limits and scan resistance favor different policies.**', '',
+               '| Policy | Benefit | Cost |', '| --- | --- | --- |',
+               '| Flush-aware | Reuses large working sets within a flush. | Can exceed capacity; sensitive to flush boundaries. |',
+               '| Strict LRU (`lru` crate) | Hard entry limit. | Cyclic access just above capacity misses every time. |',
+               '| S3-FIFO | Protects hot entries during scans. | Slower adaptation to switching sets; extra metadata. |',
+               '| Retain everything | Preserves all available reuse. | Unbounded growth with new states. |', '',
+               'This study uses a flush-aware model with per-access ordering. The PR uses flush stamps; its results are in the direct comparison above.', '',
+               '<details>', '<summary>Policy-study workloads and full results</summary>', '',
+               'W is workload scale; C is capacity. The CPU sweep varies capacity from 32 to 512 for each fixed trace.', '',
+               '| Workload | Access pattern |', '| --- | --- |',
+               '| Cycle/shuffle-plus | W+1 states, in cyclic or shuffled order. |',
+               '| Hot-scan | A hot set interleaved with new states. |',
+               '| Switch | Alternating disjoint sets. |',
+               '| Batch-single / batch-split | Identical requests, different flush boundaries. |', '',
+               '| Case / policy | Creations/frame | Median (ms) | p95 (ms) | Peak entries | Peak RSS (MiB) |',
+               '| --- | ---: | ---: | ---: | ---: | ---: |']
     for case, entry in sorted(policy_summary.items()):
-        m = entry["medians"]
+        m = entry['medians']
         report.append(f"| {case} | {m['created_per_frame']:.2f} | {m['completed_ms_p50']:.3f} | {m['completed_ms_p95']:.3f} | {m['peak_resident']:.0f} | {m['peak_rss_mib']:.2f} |")
-    report += ["", "</details>", "",
-               "Even unlimited retention cannot avoid creating pipelines for never-repeated states. "
-               "The results support the proposed fix, but leave the policy and capacity open to maintainer preferences.", "",
-               "## Measurement and uncertainty", "",
-               f"**Setup:** {adapter_name}/{backend}; {meta['platform']}; {meta['rustc'].splitlines()[0]}. "
-               "The 64×64 RGBA8 target emphasizes pipeline management costs.", "",
-               "| Experiment | Measured processes | Frames summarized per process |",
-               "| --- | ---: | --- |",
-               f"| Direct comparison | {len(a)}; 10 per case | 100, after one initial and five warmup frames |",
-               f"| Policy study | {len(b)}; 10 per case | 90, from frames 10–99 |",
-               "| Confirmation | 120; 20 per case | 100, after one initial and five warmup frames |", "",
-               "The main campaign rotates workload/policy order and includes 7,200 CPU simulations. Only shuffled traces vary with seed. "
-               "Scans and transitions remain in the measured set. No outliers are removed.", "",
-               "**Timing:** completed-frame time includes command construction, encoding, submission and the GPU wait. CPU time stops before that wait. "
-               "Each process contributes nearest-rank quantiles; tables report their medians across processes. "
-               "With 90 measured frames, the study's p99 is effectively the process maximum.", "",
-               "**Intervals:** the second-smallest through second-largest of ten process medians gives nominal 97.85% coverage under independent, identically distributed observations. "
-               "These are pointwise intervals. Shared cache state and observed drift make the independence assumptions uncertain. "
-               "They do not describe variability across machines. "
-               "[Interval method](https://itl.nist.gov/div898/software/dataplot/refman1/auxillar/mediancl.htm).", "",
-               f"[Full protocol](docs/report-protocol.md) and [measurement metadata]({link}/metadata.json).", "",
-               "## Metal cache controls", "",
-               "**Priming reduces first-use cost but cannot guarantee a warm driver cache.** "
-               "Before each suite, two complete workload passes run with `MTL_SHADER_CACHE_SIZE` unset. "
-               "Measured processes start with empty FemtoVG caches; later Metal cache eviction or invalidation is uncontrolled.", "",
-               "For example, the first LRU hot-scan priming pass reached "
-               f"{evidence['priming']['policies/hot-scan/W64/C64/lru']['phase_peaks']['scan']['priming_max_ms_by_pass'][1]:.2f} ms in a scan frame; "
-               f"the second reached {evidence['priming']['policies/hot-scan/W64/C64/lru']['phase_peaks']['scan']['priming_max_ms_by_pass'][2]:.2f} ms. "
-               f"[Priming observations]({link}/analysis/priming.md).", ""]
-    if "cold_control" in evidence:
-        report += ["**The cache override slowed startup similarly for both implementations.** "
-                   "A separate diagnostic created 17 pipelines on the first frame in each case:", "",
-                   "| `MTL_SHADER_CACHE_SIZE` | Upstream first-frame median (ms) | Proposed first-frame median (ms) |",
-                   "| --- | ---: | ---: |"]
-        for setting in ("None", "0"):
-            before = statistics.median(evidence["cold_control"][f"upstream/{setting}"]["first_frames_ms"])
-            after = statistics.median(evidence["cold_control"][f"flush-lru64/{setting}"]["first_frames_ms"])
+    report += ['', 'Even unlimited retention must create pipelines for new states.', '', '</details>', '',
+               '## Metal cache controls', '',
+               '**Driver cache state affects timing. It did not change the observed creation or retention counts.**', '',
+               '- Two priming passes precede each suite. Later Metal cache eviction remains uncontrolled.',
+               '- A separate cache-override check slowed startup similarly for upstream and proposed.',
+               '- Timing drift remained. Small differences at equal creation counts are inconclusive.', '',
+               '<details>', '<summary>Priming, cache-override diagnostic and timing drift</summary>', '',
+               'Measured processes start with empty FemtoVG caches and `MTL_SHADER_CACHE_SIZE` unset.', '',
+               'The first LRU hot-scan priming pass peaked at '
+               f"{evidence['priming']['policies/hot-scan/W64/C64/lru']['phase_peaks']['scan']['priming_max_ms_by_pass'][1]:.2f} ms; "
+               f"the second at {evidence['priming']['policies/hot-scan/W64/C64/lru']['phase_peaks']['scan']['priming_max_ms_by_pass'][2]:.2f} ms. "
+               f'[Priming observations]({link}/analysis/priming.md).', '']
+    if 'cold_control' in evidence:
+        report += ['The override diagnostic creates the same 17 pipelines in each first frame:', '',
+                   '| `MTL_SHADER_CACHE_SIZE` | Upstream first-frame median (ms) | Proposed first-frame median (ms) |', '| --- | ---: | ---: |']
+        for setting in ('None', '0'):
+            before = statistics.median(evidence['cold_control'][f'upstream/{setting}']['first_frames_ms'])
+            after = statistics.median(evidence['cold_control'][f'flush-lru64/{setting}']['first_frames_ms'])
             report.append(f"| {'Unset' if setting == 'None' else '`0`'} | {before:.2f} | {after:.2f} |")
-        report += ["", "Creation and retention counts were unchanged across settings. This supports separating driver startup cost from cache-policy behavior. "
-                   "The undocumented override is not a verified global reset; later creations can still benefit from reuse. "
-                   f"These three-launch medians are diagnostic, not an equivalence test. [Full check]({link}/analysis/cold-control.md).", ""]
-    report += ["**Timing drift remained after priming.** At 65 states, #343's process medians ranged from "
-               f"{min(r['completed_p50_ms'] for r in direct_summary['65/pr343']['per_run']):.2f} to "
-               f"{max(r['completed_p50_ms'] for r in direct_summary['65/pr343']['per_run']):.2f} ms. "
-               "Several slower processes occurred early in the campaign. Their cause is unresolved. "
-               "All were retained; small timing differences at equal creation counts should not be treated as a reliable ranking.", "",
-               "## Validation and memory limits", "",
-               f"The main campaign records {evidence['gpu_frames']:,} frames and {evidence['gpu_flushes']:,} flushes, excluding priming and the Metal diagnostic.", "",
-               "- Direct boundary tests assert the initial pipeline count. Creation/residency profiles match across repeated runs.",
-               "- Every policy-study GPU flush checks creation and retention against the CPU model. WGPU validation errors fail the run.",
-               "- These checks cover cache behavior and GPU execution. They do not compare rendered pixels.", "",
-               "**Entry counts and process memory measure different things.** RSS and physical footprint include setup, cold work and, in the policy study, a preliminary CPU simulation. "
-               "Metal resource counters omit private compiler/driver memory. Neither measure gives a reliable bytes-per-pipeline estimate.", "",
-               "## Reproduce and inspect", "",
-               "The repository contains pinned sources, patches, scripts and raw results. A fresh run needs Rust, Python, Git and a working GPU backend. "
-               "The Metal diagnostic runs only on macOS.", "",
-               "```sh", "python3 scripts/run-report.py --out runs/my-pr-report", "python3 scripts/report-sanity.py runs/my-pr-report",
-               "python3 scripts/render-report.py runs/my-pr-report", "```", "",
-               "The final command regenerates this report and its analysis from saved data. The published confirmation is included separately when its source pins match.", "",
-               f"- [Full tables]({link}/analysis/tables.md), [timing intervals]({link}/analysis/timing.csv), and [analysis JSON]({link}/analysis/evidence.json).",
-               f"- Direct comparison: [raw frames]({link}/direct/runs.jsonl.gz), [summary]({link}/direct/summary.json), [priming]({link}/direct/priming.jsonl.gz).",
-               f"- Policy study: [raw frames]({link}/policies/gpu.jsonl.gz), [summary]({link}/policies/summary.json), [priming]({link}/policies/priming.jsonl.gz).",
-               f"- CPU sweep: [raw counts]({link}/policies/simulation.jsonl.gz), [capacity/phase summaries]({link}/policies/simulation-summary.json).",
-               "- [Confirmation results and rerun commands](results/confirmation-d5241b9/README.md).",
-               f"- Supporting validation: [historical sanity check]({link}/analysis/sanity.md), [extraction rerun](results/reproduction-2026-09-27/README.md), [initial Metal probe](results/metal-cache-control-probe/README.md)."]
-    (ROOT / "REPORT.md").write_text("\n".join(report)+"\n")
-    print(f"Generated REPORT.md and {args.data}/analysis")
+        report += ['', '- Creation and retention counts were unchanged across settings.',
+                   '- Three launches per condition support a diagnostic comparison, not an equivalence test.',
+                   '- The override is undocumented and is not a verified global reset. Later creations may still benefit from reuse.', '',
+                   f'[Full diagnostic]({link}/analysis/cold-control.md).', '']
+    report += [f"At 65 states, #343 process medians ranged from {min(r['completed_p50_ms'] for r in direct_summary['65/pr343']['per_run']):.2f} "
+               f"to {max(r['completed_p50_ms'] for r in direct_summary['65/pr343']['per_run']):.2f} ms. "
+               'Several early processes were slower for unresolved reasons. All were retained.', '', '</details>', '',
+               '## Measurement and validation', '',
+               f"**{evidence['gpu_frames']:,} measured frames and {evidence['gpu_flushes']:,} flushes checked cache behavior and GPU execution.** Rendered pixels were not compared.", '',
+               'Results come from one machine. Process memory measurements do not establish a per-pipeline memory cost.', '',
+               '<details>', '<summary>Source pins, measurement method, uncertainty and validation</summary>', '',
+               f"- **Hardware/software:** {adapter}/{backend}; {meta['platform']}; {meta['rustc'].splitlines()[0]}.",
+               '- **Render target:** 64×64 RGBA8, emphasizing pipeline management costs.',
+               f"- **Source:** PR `{meta['source']['candidate']['commit'][:7]}`, upstream `{meta['source']['base']['commit'][:7]}`. Renderer verified before instrumentation. [Pins and checksums](vendor/report-source.json).",
+               '- **Build:** shared base, dependency lockfile, features and release settings.', '',
+               '| Experiment | Measured processes | Frames summarized per process |', '| --- | ---: | --- |',
+               f'| Direct comparison | {len(a)}; 10 per case | 100, after one initial and five warmup frames |',
+               f'| Policy study | {len(b)}; 10 per case | 90, from frames 10–99 |']
+    if confirmed:
+        report.append('| Confirmation | 120; 20 per case | 100, after one initial and five warmup frames |')
+    report += ['', '- **Order:** the main campaign rotates workload/policy order and includes 7,200 CPU simulations. Only shuffled traces vary with seed.',
+               '- **Timing:** completed time includes command construction, encoding, submission and the GPU wait. CPU time stops before the wait.',
+               '- **Aggregation:** nearest-rank quantiles per process, then medians across processes. With 90 frames, p99 is effectively the process maximum.',
+               '- **Exclusions:** none. Scans, transitions and slow runs remain in the data.', '',
+               '**Median intervals** span the second-smallest through second-largest of ten process medians:', '',
+               '- Nominal 97.85% coverage assumes independent, identically distributed observations.',
+               '- Shared cache state and timing drift weaken those assumptions.',
+               '- Intervals are pointwise and do not describe variation across machines.', '',
+               '[Interval method](https://itl.nist.gov/div898/software/dataplot/refman1/auxillar/mediancl.htm).', '',
+               '**Validation:**', '',
+               '- Direct boundary tests assert the initial pipeline count; repeated runs match creation/residency profiles.',
+               '- Every policy-study GPU flush checks creations and retention against the CPU model.',
+               '- WGPU validation errors fail the run. Totals exclude priming and the Metal diagnostic.', '',
+               '**Memory limits:** RSS and physical footprint include setup and cold work. The policy study also runs a CPU simulation before GPU initialization. Metal counters omit private compiler/driver memory.', '',
+               f'[Full protocol](docs/report-protocol.md) and [metadata]({link}/metadata.json).', '', '</details>', '',
+               '## Reproduce and inspect', '',
+               'Pinned sources, patches, scripts and raw data are included. Requires Rust, Python, Git and a GPU backend; the Metal diagnostic requires macOS.', '',
+               '```sh', 'python3 scripts/run-report.py --out runs/my-pr-report', 'python3 scripts/report-sanity.py runs/my-pr-report',
+               'python3 scripts/render-report.py runs/my-pr-report', '```', '',
+               'The report generator includes the published confirmation separately when source pins match.', '',
+               f'- [Full tables]({link}/analysis/tables.md), [timing intervals]({link}/analysis/timing.csv), [analysis JSON]({link}/analysis/evidence.json).',
+               f'- Direct comparison: [raw frames]({link}/direct/runs.jsonl.gz), [summary]({link}/direct/summary.json), [priming]({link}/direct/priming.jsonl.gz).',
+               f'- Policy study: [raw frames]({link}/policies/gpu.jsonl.gz), [summary]({link}/policies/summary.json), [priming]({link}/policies/priming.jsonl.gz).',
+               f'- CPU sweep: [raw counts]({link}/policies/simulation.jsonl.gz), [capacity/phase summaries]({link}/policies/simulation-summary.json).',
+               '- [Confirmation results and rerun commands](results/confirmation-d5241b9/README.md).',
+               f'- Supporting checks: [historical comparison]({link}/analysis/sanity.md), [extraction rerun](results/reproduction-2026-09-27/README.md), [initial Metal probe](results/metal-cache-control-probe/README.md).']
+    (ROOT / 'REPORT.md').write_text('\n'.join(report)+'\n')
+    print(f'Generated REPORT.md and {args.data}/analysis')
 
 
-DIRECT_POLICIES = ("upstream", "pr343", "flush-lru64", "strict-lru128")
-if __name__ == "__main__":
+DIRECT_POLICIES = ('upstream', 'pr343', 'flush-lru64', 'strict-lru128')
+if __name__ == '__main__':
     main()

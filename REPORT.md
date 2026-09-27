@@ -1,31 +1,44 @@
 # FemtoVG WGPU pipeline-cache evaluation
 
-The proposed cache avoids rebuilding an entire working set after a small intervening flush. At 65 pipeline states, it creates **2 pipelines per frame instead of 65** with [PR #343](https://github.com/femtovg/femtovg/pull/343). Median completed-frame time falls from **27.18 to 1.19 ms** on Apple M4 Max/Metal.
+**The proposal prevents small flushes from discarding an entire cached working set.**
 
-The tradeoff is a soft capacity target: pipelines used by one flush remain protected even above 64 entries. These synthetic tests show the benefit and its limits. They do not estimate application-wide speedups or establish an optimal capacity.
+At 65 states, pipeline creations fall from **65 to 2 per frame** and median frame time from **27.18 to 1.19 ms**, compared with [PR #343](https://github.com/femtovg/femtovg/pull/343) on Apple M4 Max/Metal.
 
-## What changes
+**Tradeoff:** 64 entries is a retention target. A single flush can retain more. These synthetic results do not predict application-wide speedups.
+
+## Cache behavior
 
 | Implementation | Eviction after a flush |
 | --- | --- |
-| Upstream | Remove every pipeline unused by that flush. |
-| #343 | Apply that sweep only when the cache exceeds 64 entries. |
-| Proposed | Above 64 entries, remove the oldest pipelines unused by that flush. |
+| Upstream | Remove all pipelines unused by that flush. |
+| #343 | Do the same, but only above 64 entries. |
+| Proposed | Above 64 entries, remove oldest unused pipelines until the target is reached. Protect pipelines used by the current flush. |
 
-A clear-only flush can therefore discard the preceding draw's pipelines on upstream and, above capacity, on #343. The proposal trims older entries while preserving the current flush's working set. Recency is measured in flushes; ties within a flush have no specified order.
-
-The direct tests use the actual PR renderer at `d5241b9`, based on upstream `fa5d6a3`. The build verifies the renderer before adding counters. All variants share the base, dependency lockfile, features and release settings. [Full source pins and checksums](vendor/report-source.json).
+The proposal measures recency in flushes. Entries last used in the same flush have no specified eviction order.
 
 ## Direct comparison
 
-The proposal reduces repeated creation above #343's threshold; it does not eliminate capacity limits. At 65, 80 and 129 states, #343 recreates the whole set each frame. The proposal recreates 2, 17 and 66 pipelines respectively. Strict LRU 128 holds the smaller sets but recreates all 129 pipelines in the cyclic 129-state case.
+**Above 64 states, the proposal rebuilds fewer pipelines than #343.**
 
-Each numbered workload draws N−1 blend states, then issues a separate clear flush. N includes the clear pipeline. The mixed workload alternates glyph-atlas, clipped-layer, blur, screen and clear operations. Strict LRU 128 has twice the proposal's retention target.
+| States | #343 creations/frame | Proposed creations/frame |
+| ---: | ---: | ---: |
+| 65 | 65 | 2 |
+| 80 | 80 | 17 |
+| 129 | 129 | 66 |
 
-Times below are milliseconds, aggregated over ten processes per case. Completed time includes CPU work and the GPU completion wait. Bracketed values are intervals for the median under the assumptions described in [Measurement and uncertainty](#measurement-and-uncertainty).
+Strict LRU 128 avoids rebuilding the smaller sets, but rebuilds all 129 pipelines when cyclic access exceeds its capacity.
 
 <details>
-<summary>All direct results: creations, median intervals and p95</summary>
+<summary>Full results and workload definitions</summary>
+
+| Workload | Operations |
+| --- | --- |
+| Numbered | N−1 blend states, followed by a separate clear flush. N includes the clear pipeline. |
+| Mixed | Glyph-atlas, clipped-layer, blur, screen and clear operations. |
+
+Strict LRU 128 has twice the proposed retention target.
+
+Times include CPU work and the GPU completion wait. Each row summarizes ten processes. Brackets give median intervals; see [measurement details](#measurement-and-validation).
 
 | Workload | Policy | Creations/frame | Median [interval] (ms) | p95 (ms) |
 | --- | --- | ---: | ---: | ---: |
@@ -54,13 +67,13 @@ Times below are milliseconds, aggregated over ten processes per case. Completed 
 | mixed | Proposed 64 | 0 | 0.782 [0.723, 0.912] | 1.074 |
 | mixed | Strict LRU 128 | 0 | 0.780 [0.722, 1.021] | 1.066 |
 
+[Additional quantiles and within-round ratios](results/pr-report-d5241b9/analysis/tables.md). Ratios pair process medians within a round; they are not ratios of aggregate medians.
+
 </details>
 
-[Complete tables, including p99 and within-round ratios](results/pr-report-d5241b9/analysis/tables.md). Ratios compare process medians within the same round; they are not ratios of aggregate medians.
+## Confirmation
 
-## Randomized confirmation
-
-**At 65 states, the proposal was faster in 20 of 20 pairs.** A separate run compared the proposal with #343 in twenty adjacent pairs per workload. Policy order was randomized and balanced before measurement.
+**The proposal was faster in all 20 randomized pairs at 65 states.**
 
 | Workload | #343 median / p95 (ms) | Proposed median / p95 (ms) |
 | --- | ---: | ---: |
@@ -68,27 +81,44 @@ Times below are milliseconds, aggregated over ten processes per case. Completed 
 | 65 | 25.182 / 26.124 | 1.128 / 1.384 |
 | mixed | 0.745 / 0.918 | 0.748 / 0.901 |
 
-Median within-pair proposed/#343 ratios are 0.998 at 64 states and 0.998 for mixed operations. Those cases show no obvious regression; they do not establish statistical equivalence.
-
-All 120 measured and 12 priming runs match the original creation/residency profiles. The repeat is reported separately. [Protocol, individual pairs and raw data](results/confirmation-d5241b9/README.md).
-
-## Other retention policies
-
-No policy wins across all tested access patterns. The main tradeoffs are capacity, scan resistance and sensitivity to flush boundaries.
-
-| Policy | Observed tradeoff |
-| --- | --- |
-| Flush-aware | Reuses a large flush's working set by exceeding the target. Splitting the same requests across smaller flushes can lose that advantage. |
-| Strict LRU (`lru` crate) | Enforces an entry limit. Cyclic access just beyond capacity can miss on every request. |
-| S3-FIFO | Protects hot entries during scans, but takes longer to adapt to switching sets and needs admission/ghost metadata. |
-| Retain everything | Shows available reuse, with continuing growth under streams of new states. |
-
-**The study's `flush-lru` is a model variant, not the exact PR implementation.** It orders accesses within a flush; the PR uses flush stamps. The direct comparison and confirmation above test the actual PR.
-
-W is workload scale and C is capacity. Cycle/shuffle-plus uses W+1 states. Hot-scan interleaves a hot set with new states; switch alternates disjoint sets. Batch-single and batch-split issue the same requests with different flush boundaries. The CPU sweep additionally varies capacity from 32 to 512 for each fixed trace.
+At 64 states and in the mixed workload, paired results show no obvious regression. Statistical equivalence was not tested.
 
 <details>
-<summary>All policy-study results: timing, creation counts and memory</summary>
+<summary>Confirmation protocol and paired results</summary>
+
+- Twenty adjacent pairs per workload, with randomized, balanced policy order fixed before measurement.
+- Median proposed/#343 paired ratios: 0.998 at 64 states; 0.998 for mixed operations.
+- All 120 measured and 12 priming runs match the primary creation/residency profiles. No runs excluded.
+- Results remain separate from the primary estimates.
+
+[Full protocol, individual pairs and raw data](results/confirmation-d5241b9/README.md).
+
+</details>
+
+## Other policies
+
+**The choice remains open: reuse, memory limits and scan resistance favor different policies.**
+
+| Policy | Benefit | Cost |
+| --- | --- | --- |
+| Flush-aware | Reuses large working sets within a flush. | Can exceed capacity; sensitive to flush boundaries. |
+| Strict LRU (`lru` crate) | Hard entry limit. | Cyclic access just above capacity misses every time. |
+| S3-FIFO | Protects hot entries during scans. | Slower adaptation to switching sets; extra metadata. |
+| Retain everything | Preserves all available reuse. | Unbounded growth with new states. |
+
+This study uses a flush-aware model with per-access ordering. The PR uses flush stamps; its results are in the direct comparison above.
+
+<details>
+<summary>Policy-study workloads and full results</summary>
+
+W is workload scale; C is capacity. The CPU sweep varies capacity from 32 to 512 for each fixed trace.
+
+| Workload | Access pattern |
+| --- | --- |
+| Cycle/shuffle-plus | W+1 states, in cyclic or shuffled order. |
+| Hot-scan | A hot set interleaved with new states. |
+| Switch | Alternating disjoint sets. |
+| Batch-single / batch-split | Identical requests, different flush boundaries. |
 
 | Case / policy | Creations/frame | Median (ms) | p95 (ms) | Peak entries | Peak RSS (MiB) |
 | --- | ---: | ---: | ---: | ---: | ---: |
@@ -125,13 +155,55 @@ W is workload scale and C is capacity. Cycle/shuffle-plus uses W+1 states. Hot-s
 | switch/scale64/cap64/retain | 0.52 | 0.523 | 0.580 | 95 | 29.88 |
 | switch/scale64/cap64/s3fifo | 5.21 | 0.543 | 15.685 | 64 | 30.20 |
 
+Even unlimited retention must create pipelines for new states.
+
 </details>
 
-Even unlimited retention cannot avoid creating pipelines for never-repeated states. The results support the proposed fix, but leave the policy and capacity open to maintainer preferences.
+## Metal cache controls
 
-## Measurement and uncertainty
+**Driver cache state affects timing. It did not change the observed creation or retention counts.**
 
-**Setup:** Apple M4 Max/Metal; macOS-26.6.2-arm64-arm-64bit; rustc 1.96.0 (ac68faa20 2026-05-25). The 64×64 RGBA8 target emphasizes pipeline management costs.
+- Two priming passes precede each suite. Later Metal cache eviction remains uncontrolled.
+- A separate cache-override check slowed startup similarly for upstream and proposed.
+- Timing drift remained. Small differences at equal creation counts are inconclusive.
+
+<details>
+<summary>Priming, cache-override diagnostic and timing drift</summary>
+
+Measured processes start with empty FemtoVG caches and `MTL_SHADER_CACHE_SIZE` unset.
+
+The first LRU hot-scan priming pass peaked at 7482.02 ms; the second at 124.36 ms. [Priming observations](results/pr-report-d5241b9/analysis/priming.md).
+
+The override diagnostic creates the same 17 pipelines in each first frame:
+
+| `MTL_SHADER_CACHE_SIZE` | Upstream first-frame median (ms) | Proposed first-frame median (ms) |
+| --- | ---: | ---: |
+| Unset | 15.79 | 15.74 |
+| `0` | 614.37 | 613.90 |
+
+- Creation and retention counts were unchanged across settings.
+- Three launches per condition support a diagnostic comparison, not an equivalence test.
+- The override is undocumented and is not a verified global reset. Later creations may still benefit from reuse.
+
+[Full diagnostic](results/pr-report-d5241b9/analysis/cold-control.md).
+
+At 65 states, #343 process medians ranged from 26.40 to 48.19 ms. Several early processes were slower for unresolved reasons. All were retained.
+
+</details>
+
+## Measurement and validation
+
+**57,440 measured frames and 243,600 flushes checked cache behavior and GPU execution.** Rendered pixels were not compared.
+
+Results come from one machine. Process memory measurements do not establish a per-pipeline memory cost.
+
+<details>
+<summary>Source pins, measurement method, uncertainty and validation</summary>
+
+- **Hardware/software:** Apple M4 Max/Metal; macOS-26.6.2-arm64-arm-64bit; rustc 1.96.0 (ac68faa20 2026-05-25).
+- **Render target:** 64×64 RGBA8, emphasizing pipeline management costs.
+- **Source:** PR `d5241b9`, upstream `fa5d6a3`. Renderer verified before instrumentation. [Pins and checksums](vendor/report-source.json).
+- **Build:** shared base, dependency lockfile, features and release settings.
 
 | Experiment | Measured processes | Frames summarized per process |
 | --- | ---: | --- |
@@ -139,44 +211,34 @@ Even unlimited retention cannot avoid creating pipelines for never-repeated stat
 | Policy study | 320; 10 per case | 90, from frames 10–99 |
 | Confirmation | 120; 20 per case | 100, after one initial and five warmup frames |
 
-The main campaign rotates workload/policy order and includes 7,200 CPU simulations. Only shuffled traces vary with seed. Scans and transitions remain in the measured set. No outliers are removed.
+- **Order:** the main campaign rotates workload/policy order and includes 7,200 CPU simulations. Only shuffled traces vary with seed.
+- **Timing:** completed time includes command construction, encoding, submission and the GPU wait. CPU time stops before the wait.
+- **Aggregation:** nearest-rank quantiles per process, then medians across processes. With 90 frames, p99 is effectively the process maximum.
+- **Exclusions:** none. Scans, transitions and slow runs remain in the data.
 
-**Timing:** completed-frame time includes command construction, encoding, submission and the GPU wait. CPU time stops before that wait. Each process contributes nearest-rank quantiles; tables report their medians across processes. With 90 measured frames, the study's p99 is effectively the process maximum.
+**Median intervals** span the second-smallest through second-largest of ten process medians:
 
-**Intervals:** the second-smallest through second-largest of ten process medians gives nominal 97.85% coverage under independent, identically distributed observations. These are pointwise intervals. Shared cache state and observed drift make the independence assumptions uncertain. They do not describe variability across machines. [Interval method](https://itl.nist.gov/div898/software/dataplot/refman1/auxillar/mediancl.htm).
+- Nominal 97.85% coverage assumes independent, identically distributed observations.
+- Shared cache state and timing drift weaken those assumptions.
+- Intervals are pointwise and do not describe variation across machines.
 
-[Full protocol](docs/report-protocol.md) and [measurement metadata](results/pr-report-d5241b9/metadata.json).
+[Interval method](https://itl.nist.gov/div898/software/dataplot/refman1/auxillar/mediancl.htm).
 
-## Metal cache controls
+**Validation:**
 
-**Priming reduces first-use cost but cannot guarantee a warm driver cache.** Before each suite, two complete workload passes run with `MTL_SHADER_CACHE_SIZE` unset. Measured processes start with empty FemtoVG caches; later Metal cache eviction or invalidation is uncontrolled.
+- Direct boundary tests assert the initial pipeline count; repeated runs match creation/residency profiles.
+- Every policy-study GPU flush checks creations and retention against the CPU model.
+- WGPU validation errors fail the run. Totals exclude priming and the Metal diagnostic.
 
-For example, the first LRU hot-scan priming pass reached 7482.02 ms in a scan frame; the second reached 124.36 ms. [Priming observations](results/pr-report-d5241b9/analysis/priming.md).
+**Memory limits:** RSS and physical footprint include setup and cold work. The policy study also runs a CPU simulation before GPU initialization. Metal counters omit private compiler/driver memory.
 
-**The cache override slowed startup similarly for both implementations.** A separate diagnostic created 17 pipelines on the first frame in each case:
+[Full protocol](docs/report-protocol.md) and [metadata](results/pr-report-d5241b9/metadata.json).
 
-| `MTL_SHADER_CACHE_SIZE` | Upstream first-frame median (ms) | Proposed first-frame median (ms) |
-| --- | ---: | ---: |
-| Unset | 15.79 | 15.74 |
-| `0` | 614.37 | 613.90 |
-
-Creation and retention counts were unchanged across settings. This supports separating driver startup cost from cache-policy behavior. The undocumented override is not a verified global reset; later creations can still benefit from reuse. These three-launch medians are diagnostic, not an equivalence test. [Full check](results/pr-report-d5241b9/analysis/cold-control.md).
-
-**Timing drift remained after priming.** At 65 states, #343's process medians ranged from 26.40 to 48.19 ms. Several slower processes occurred early in the campaign. Their cause is unresolved. All were retained; small timing differences at equal creation counts should not be treated as a reliable ranking.
-
-## Validation and memory limits
-
-The main campaign records 57,440 frames and 243,600 flushes, excluding priming and the Metal diagnostic.
-
-- Direct boundary tests assert the initial pipeline count. Creation/residency profiles match across repeated runs.
-- Every policy-study GPU flush checks creation and retention against the CPU model. WGPU validation errors fail the run.
-- These checks cover cache behavior and GPU execution. They do not compare rendered pixels.
-
-**Entry counts and process memory measure different things.** RSS and physical footprint include setup, cold work and, in the policy study, a preliminary CPU simulation. Metal resource counters omit private compiler/driver memory. Neither measure gives a reliable bytes-per-pipeline estimate.
+</details>
 
 ## Reproduce and inspect
 
-The repository contains pinned sources, patches, scripts and raw results. A fresh run needs Rust, Python, Git and a working GPU backend. The Metal diagnostic runs only on macOS.
+Pinned sources, patches, scripts and raw data are included. Requires Rust, Python, Git and a GPU backend; the Metal diagnostic requires macOS.
 
 ```sh
 python3 scripts/run-report.py --out runs/my-pr-report
@@ -184,11 +246,11 @@ python3 scripts/report-sanity.py runs/my-pr-report
 python3 scripts/render-report.py runs/my-pr-report
 ```
 
-The final command regenerates this report and its analysis from saved data. The published confirmation is included separately when its source pins match.
+The report generator includes the published confirmation separately when source pins match.
 
-- [Full tables](results/pr-report-d5241b9/analysis/tables.md), [timing intervals](results/pr-report-d5241b9/analysis/timing.csv), and [analysis JSON](results/pr-report-d5241b9/analysis/evidence.json).
+- [Full tables](results/pr-report-d5241b9/analysis/tables.md), [timing intervals](results/pr-report-d5241b9/analysis/timing.csv), [analysis JSON](results/pr-report-d5241b9/analysis/evidence.json).
 - Direct comparison: [raw frames](results/pr-report-d5241b9/direct/runs.jsonl.gz), [summary](results/pr-report-d5241b9/direct/summary.json), [priming](results/pr-report-d5241b9/direct/priming.jsonl.gz).
 - Policy study: [raw frames](results/pr-report-d5241b9/policies/gpu.jsonl.gz), [summary](results/pr-report-d5241b9/policies/summary.json), [priming](results/pr-report-d5241b9/policies/priming.jsonl.gz).
 - CPU sweep: [raw counts](results/pr-report-d5241b9/policies/simulation.jsonl.gz), [capacity/phase summaries](results/pr-report-d5241b9/policies/simulation-summary.json).
 - [Confirmation results and rerun commands](results/confirmation-d5241b9/README.md).
-- Supporting validation: [historical sanity check](results/pr-report-d5241b9/analysis/sanity.md), [extraction rerun](results/reproduction-2026-09-27/README.md), [initial Metal probe](results/metal-cache-control-probe/README.md).
+- Supporting checks: [historical comparison](results/pr-report-d5241b9/analysis/sanity.md), [extraction rerun](results/reproduction-2026-09-27/README.md), [initial Metal probe](results/metal-cache-control-probe/README.md).
