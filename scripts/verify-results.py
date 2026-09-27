@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Verify provenance and reproduce checked-in summaries without a GPU."""
 import gzip
 import hashlib
@@ -35,10 +34,9 @@ def main():
         metadata = json.loads((directory / "metadata.json").read_text())
         require(digest(ARCHIVE) == metadata["archive_sha256"], f"{name}: archive mismatch")
         require(digest(directory / "Cargo.lock") == metadata["lock_sha256"], f"{name}: historical lock mismatch")
-        for original, expected in metadata.get("sources", {}).items():
-            relative = original.removeprefix("tools/femtovg-cache-bench/")
-            if relative.startswith("policy/"):
-                relative = "crates/cache-policy/" + relative.removeprefix("policy/")
+        for relative, expected in metadata.get("sources", {}).items():
+            require(not Path(relative).is_absolute() and (ROOT / relative).resolve().is_relative_to(ROOT),
+                    f"source path must stay inside the repository: {relative}")
             require(digest(ROOT / relative) == expected, f"recorded source differs: {relative}")
     # Moving into a workspace removes unused lock entries, but must not change registry pins.
     def registry_pins(path):

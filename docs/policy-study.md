@@ -16,7 +16,7 @@ python3 scripts/femtovg-policy-study.py gpu --runs 10 --out runs/policy-study/my
 Use a new output directory; existing simulation/GPU results will not be overwritten.
 `summarize --out ...` recalculates the summary from saved GPU frames;
 `simulation-summary --out ...` aggregates the CPU sweep into capacity curves. The runner
-uses `/usr/bin/time` to record peak RSS and OS process statistics on macOS/Linux.
+uses the external `time` utility from `PATH` to record peak RSS and OS process statistics on macOS/Linux.
 On macOS, the summary also extracts the distinct peak physical-footprint counter
 from those raw statistics. This broader OS accounting must not be conflated with RSS.
 Metal resource bytes are sampled after each completed GPU frame, subject to the

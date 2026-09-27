@@ -50,10 +50,10 @@
   "lock_sha256": "ce7f14876b56fc177620be3532b0c1a37b0d6a19c928d348d284c372734f7dba",
   "archive_sha256": "d01b5ae2d028f7d4e01d310d95a984337742e398bee944a1935f6ea7b1f42225",
   "sources": {
-    "tools/femtovg-cache-bench/policy/src/lib.rs": "6eac43e3bb0699a9b2924621cab416160b16879af3c10d3b16f275f70bea8571",
-    "tools/femtovg-cache-bench/src/bin/policy-study.rs": "67946119ddb96f35245268ae733d8be36b267587411518a2bd9d6c2366588fa9",
-    "tools/femtovg-cache-bench/src/main.rs": "af672655ade278fbe553b86eb31e0154f9325abc25f138a47643aa4c8e4a28e2",
-    "tools/femtovg-cache-bench/src/study.rs": "f84bd4b9c0cd87a94afe9f554d8c25b4bc7ee77f46b1f7e9fb4c61af278206be"
+    "crates/cache-policy/src/lib.rs": "6eac43e3bb0699a9b2924621cab416160b16879af3c10d3b16f275f70bea8571",
+    "src/bin/policy-study.rs": "67946119ddb96f35245268ae733d8be36b267587411518a2bd9d6c2366588fa9",
+    "src/main.rs": "af672655ade278fbe553b86eb31e0154f9325abc25f138a47643aa4c8e4a28e2",
+    "src/study.rs": "f84bd4b9c0cd87a94afe9f554d8c25b4bc7ee77f46b1f7e9fb4c61af278206be"
   },
   "renderer_sha256": "56c23c9463b5850ffd645f56239dbff33b3e1838f875270568a1c9754d6afaaf"
 }

@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Build and measure four pinned FemtoVG cache policies on a real, offscreen GPU."""
 import argparse
 import gzip

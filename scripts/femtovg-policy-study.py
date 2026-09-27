@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Shared-model cache-policy sweep and selected ten-round real-GPU experiments."""
 import argparse
 import gzip
@@ -140,6 +139,9 @@ def main():
         summarize(args.out)
         return
     assert args.runs > 0
+    time_command = shutil.which("time")
+    if time_command is None:
+        parser.error("the external time utility must be available on PATH")
     dest = args.out / "gpu.jsonl.gz"
     if dest.exists():
         parser.error(f"refusing to overwrite {dest}")
@@ -162,7 +164,7 @@ def main():
                 for position, index in enumerate(order):
                     policy = POLICIES[index]
                     flag = "-l" if platform.system() == "Darwin" else "-v"
-                    cmd = ["/usr/bin/time", flag, str(BINARY), policy, str(capacity), scenario, str(scale), "100", str(run + 1)]
+                    cmd = [time_command, flag, str(BINARY), policy, str(capacity), scenario, str(scale), "100", str(run + 1)]
                     result = subprocess.run(cmd, text=True, capture_output=True, timeout=240)
                     if result.returncode:
                         raise RuntimeError(f"{cmd}: {result.stderr}")

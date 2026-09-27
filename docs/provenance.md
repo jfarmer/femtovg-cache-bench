@@ -2,17 +2,9 @@
 
 The harness and results were extracted from `jfarmer/alustin-editor` at commit `ae899a27f66e02c09700a1f86e7892cfe7467c69`. This repository reorganizes that experiment for standalone use. The Rust source, patches, FemtoVG archive, historical Cargo lockfiles, raw measurements, and JSON results are unchanged at extraction. Python runners were adapted to the new layout and share source preparation. Documentation links were adjusted.
 
-Historical metadata retains its original paths and hashes. It describes the original measurements, not a fresh benchmark run from this repository. `scripts/verify-results.py` checks recorded source hashes where available, the pinned archive and lockfile, and regeneration of all three summaries from raw measurements.
+Historical metadata retains its measured source hashes, but source filenames have been normalized to paths relative to this repository. It describes the original measurements, not a fresh benchmark run here. Raw measurements and their numeric summaries are unchanged. `scripts/verify-results.py` checks recorded source hashes where available, the pinned archive and lockfiles, and regeneration of all three summaries from raw measurements.
 
-| Original path | Standalone path |
-| --- | --- |
-| `tools/femtovg-cache-bench/src/` | `src/` |
-| `tools/femtovg-cache-bench/policy/src/` | `crates/cache-policy/src/` |
-| `tools/femtovg-cache-bench/upstream-base.tar.gz` | `vendor/femtovg-9f2523b.tar.gz` |
-| `tools/femtovg-cache-bench/*.patch` | `patches/*.patch` |
-| `scripts/perf/femtovg-*.py` | `scripts/femtovg-*.py` |
-| `docs/performance/femtovg-pr343/synthetic/` | `results/pr343/` |
-| `docs/performance/femtovg-policy-study/` | `results/policy-study/` |
+The Rust harness lives in `src/`, the shared policy crate in `crates/cache-policy/`, policy changes in `patches/`, and the pinned archive in `vendor/`. The two result sets are under `results/pr343/` and `results/policy-study/`. All required project files are contained in this checkout; builds require the documented Rust, Python, Git, and system/GPU tools.
 
 ## Version boundaries
 
