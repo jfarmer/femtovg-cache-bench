@@ -32,6 +32,8 @@ Building regenerates `vendor/femtovg/`; make changes in `patches/`, not that dir
 
 ## Results and methodology
 
+- [Full standalone rerun](results/reproduction-2026-09-27/README.md): current results, exact count checks, timing differences, and median confidence intervals.
+
 - [Direct comparison](results/pr343/README.md): 240 GPU processes covering working sets of 63, 64, 65, 80, and 129 states plus mixed rendering operations. [Methodology](docs/comparison.md).
 - [Policy study](results/policy-study/README.md): 7,200 CPU simulations and 280 GPU processes comparing strict LRU, flush-aware LRU, S3-FIFO, and unlimited retention. [Methodology](docs/policy-study.md).
 - [Standalone validation](docs/validation.md) and its reusable check command.
@@ -52,3 +54,14 @@ docs/                  Methodology and provenance
 ```
 
 Harness code is MIT licensed. The bundled FemtoVG sources retain their MIT/Apache-2.0 licenses inside the archive.
+
+## Compare another full run
+
+Keep the full runner outputs in sibling `pr343/` and `policy-study/` directories, including the CPU sweep. Compare them against the historical baseline:
+
+```sh
+python3 scripts/compare-runs.py runs/my-rerun --out runs/my-comparison
+python3 -m unittest discover -s tests -v
+```
+
+The comparison checks every recorded flush, exact simulation records, and renderer hashes. It reports timing changes, paired extreme frames, memory diagnostics, and confidence intervals over process-level statistics. See the dated rerun report for the assumptions and observed differences.

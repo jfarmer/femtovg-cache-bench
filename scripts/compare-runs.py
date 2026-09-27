@@ -61,6 +61,20 @@ def wait_summaries(data, study):
                    for metric in runs[0]} for case, runs in grouped.items()}
 
 
+def paired_extremes(old, new):
+    """Show both measurements for the slowest frames in either dataset."""
+    result = {}
+    for label, data in (("old", old), ("new", new)):
+        slowest = sorted(((f["completed_ms"], key, index)
+                          for key, run in data.items() for index, f in enumerate(run["frames"])),
+                         reverse=True)[:3]
+        result[label] = [{"run": key, "frame": index, "phase": data[key]["frames"][index]["phase"],
+                          "old_completed_ms": old[key]["frames"][index]["completed_ms"],
+                          "new_completed_ms": new[key]["frames"][index]["completed_ms"]}
+                         for _, key, index in slowest]
+    return result
+
+
 def compare_gpu(old_dir, new_dir, study):
     filename = "gpu.jsonl.gz" if study else "runs.jsonl.gz"
     fields = ("scenario", "scale", "capacity", "policy", "seed") if study else ("scenario", "policy", "round")
@@ -132,7 +146,8 @@ def compare_gpu(old_dir, new_dir, study):
             "archive_hashes_match": old_meta["archive_sha256"] == new_meta["archive_sha256"],
             "platform_match": old_meta["platform"] == new_meta["platform"],
             "rustc_match": old_meta["rustc"] == new_meta["rustc"],
-            "adapters": sorted(adapters), "timing_flags": flags, "cases": rows, "median_intervals": intervals}
+            "adapters": sorted(adapters), "timing_flags": flags, "cases": rows, "median_intervals": intervals,
+            "paired_extreme_frames": paired_extremes(old, new)}
 
 
 def compare_simulation(old_path, new_path):

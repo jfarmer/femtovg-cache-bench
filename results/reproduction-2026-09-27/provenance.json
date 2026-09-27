@@ -1,0 +1,17 @@
+{
+  "date": "2026-09-27",
+  "measured_commit": "4b91f93dfb5ddbd01dc1d0cfc7ff435f1043dae2",
+  "repository": "https://github.com/jfarmer/femtovg-cache-bench",
+  "checkout_state": "clean throughout both full measurements; no harness edits or concurrent benchmark jobs",
+  "commands": [
+    "python3 scripts/femtovg-cache-synthetic.py --build --runs 10 --frames 100 --out runs/reproduction-2026-09-27/pr343",
+    "python3 scripts/femtovg-policy-study.py build",
+    "python3 scripts/femtovg-policy-study.py simulate --out runs/reproduction-2026-09-27/policy-study",
+    "python3 scripts/femtovg-policy-study.py simulation-summary --out runs/reproduction-2026-09-27/policy-study",
+    "python3 scripts/femtovg-policy-study.py gpu --runs 10 --out runs/reproduction-2026-09-27/policy-study"
+  ],
+  "gpu_processes": 520,
+  "cpu_simulations": 7200,
+  "driver_cache_reset": false,
+  "notes": "Separate full rerun from the published clone. New raw data and summaries were copied byte-for-byte from the ignored run directories. Each subdirectory includes the measured root Cargo.lock. The harness implements the historical policy variants, not a new upstream base or latest PR revision."
+}

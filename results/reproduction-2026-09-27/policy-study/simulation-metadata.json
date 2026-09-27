@@ -1,0 +1,54 @@
+{
+  "build": {
+    "binary_sha256": "1094fae92dc8a3b2ded54616d3cd0288e0b831d18b5ba8b2d1832d849c437466",
+    "renderer_sha256": "56c23c9463b5850ffd645f56239dbff33b3e1838f875270568a1c9754d6afaaf",
+    "inputs": {
+      "Cargo.lock": "27924f3a0b5a1d0d1da4404b4fc6d36b98d12351bfc825198b6ee31042de2cf8",
+      "Cargo.toml": "f7a6c1d451585c9e0088035c4416aa9a844182cab78a91e70a535e4b8aeba08b",
+      "crates/cache-policy/Cargo.toml": "ec9d583d4ffade642d903aa757265e412583d705ca23c052722fcfc5106b372a",
+      "crates/cache-policy/src/lib.rs": "6eac43e3bb0699a9b2924621cab416160b16879af3c10d3b16f275f70bea8571",
+      "patches/flush-lru64.patch": "e70fa850d6a5c22abe746f620a33430d0c57566e7c6518472499ae3ddabf64de",
+      "patches/instrumentation.patch": "383896b24835bcdbfe2f801e47cfb9259e1eea5cd7eb19c1180228af6de40159",
+      "patches/policy-study.patch": "9dd2910762c25c8774ce63c3c14c99805b5ec7801954c5bfb7893f8067e63c4e",
+      "patches/pr343.patch": "0e8169a54b5faf2e8e311a08de5d0c4d19988f5a202b7ba0845f0bf8dceceb8f",
+      "patches/strict-lru128.patch": "2aa9010e9f91ba94612674a100db8ce16e1d92c9f3d5cfd0d834df411018cebc",
+      "scripts/check.py": "e0808eb0ca6dcfbbcbff6c39f080dbe24a1dd470c8ac5662fdb051a27f10bec0",
+      "scripts/common.py": "d204df1a3a5fcab44116ec7a367ec8252c97f187a38a3ba05b72aeedbb0d3f5d",
+      "scripts/femtovg-cache-synthetic.py": "e0fed976f0f6f606ea2166a1bafe518ff9233c9d987c554235f8d7492e08edab",
+      "scripts/femtovg-policy-study.py": "96e86afebe98713de5e775cebaefeabb249a6d8204a618336876d5cfd4fdc90a",
+      "scripts/verify-results.py": "2edf6cbdbb60f895e6bd9dcd382e15e590ca631b0fe83cb527364c4f1579d3b7",
+      "src/bin/policy-study.rs": "67946119ddb96f35245268ae733d8be36b267587411518a2bd9d6c2366588fa9",
+      "src/main.rs": "af672655ade278fbe553b86eb31e0154f9325abc25f138a47643aa4c8e4a28e2",
+      "src/study.rs": "f84bd4b9c0cd87a94afe9f554d8c25b4bc7ee77f46b1f7e9fb4c61af278206be",
+      "vendor/femtovg-9f2523b.tar.gz": "d01b5ae2d028f7d4e01d310d95a984337742e398bee944a1935f6ea7b1f42225",
+      "vendor/femtovg.json": "152eff5a668524ce7938c8bc6a8178c72cb0d766c88e309ee978c897d371fb1d"
+    }
+  },
+  "binary_sha256": "1094fae92dc8a3b2ded54616d3cd0288e0b831d18b5ba8b2d1832d849c437466",
+  "lock_sha256": "27924f3a0b5a1d0d1da4404b4fc6d36b98d12351bfc825198b6ee31042de2cf8",
+  "scales": [
+    64,
+    128,
+    256
+  ],
+  "capacities": [
+    32,
+    64,
+    128,
+    256,
+    512
+  ],
+  "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+  ],
+  "frames": 100
+}
