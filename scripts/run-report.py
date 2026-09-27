@@ -71,11 +71,11 @@ def prepare(policy):
     return {"origin": origin, "origin_commit": PIN[origin]["commit"], "origin_renderer_sha256": before}
 
 
-def build():
+def build(policies=(*DIRECT_POLICIES, "policy-study")):
     provenance = {}
     with build_lock():
         BINS.mkdir(parents=True, exist_ok=True)
-        for policy in (*DIRECT_POLICIES, "policy-study"):
+        for policy in policies:
             origin = prepare(policy)
             binary = "policy-study" if policy == "policy-study" else "femtovg-cache-bench"
             env = dict(os.environ, CACHE_BENCH_POLICY=policy, PIPELINE_POLICY_STUDY="1")
