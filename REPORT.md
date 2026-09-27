@@ -38,7 +38,7 @@ Strict LRU 128 avoids rebuilding the smaller sets, but rebuilds all 129 pipeline
 
 Strict LRU 128 has twice the proposed retention target.
 
-Times include CPU work and the GPU completion wait. Each row summarizes ten processes. Brackets give median intervals; see [measurement details](#measurement-and-validation).
+Times include CPU work and the GPU completion wait. Each row summarizes ten processes. Brackets give median intervals. See [measurement details](#measurement-and-validation).
 
 | Workload | Policy | Creations/frame | Median [interval] (ms) | p95 (ms) |
 | --- | --- | ---: | ---: | ---: |
@@ -67,7 +67,7 @@ Times include CPU work and the GPU completion wait. Each row summarizes ten proc
 | mixed | Proposed 64 | 0 | 0.782 [0.723, 0.912] | 1.074 |
 | mixed | Strict LRU 128 | 0 | 0.780 [0.722, 1.021] | 1.066 |
 
-[Additional quantiles and within-round ratios](results/pr-report-d5241b9/analysis/tables.md). Ratios pair process medians within a round; they are not ratios of aggregate medians.
+[Additional quantiles and within-round ratios](results/pr-report-d5241b9/analysis/tables.md). Ratios pair process medians within a round. They are not ratios of aggregate medians.
 
 </details>
 
@@ -87,7 +87,7 @@ At 64 states and in the mixed workload, paired results show no obvious regressio
 <summary>Confirmation protocol and paired results</summary>
 
 - Twenty adjacent pairs per workload, with randomized, balanced policy order fixed before measurement.
-- Median proposed/#343 paired ratios: 0.998 at 64 states; 0.998 for mixed operations.
+- Median proposed/#343 paired ratios: 0.998 at 64 states. For mixed operations, the ratio is 0.998.
 - All 120 measured and 12 priming runs match the primary creation/residency profiles. No runs excluded.
 - Results remain separate from the primary estimates.
 
@@ -101,17 +101,17 @@ At 64 states and in the mixed workload, paired results show no obvious regressio
 
 | Policy | Benefit | Cost |
 | --- | --- | --- |
-| Flush-aware | Reuses large working sets within a flush. | Can exceed capacity; sensitive to flush boundaries. |
+| Flush-aware | Reuses large working sets within a flush. | Can exceed capacity. Sensitive to flush boundaries. |
 | Strict LRU (`lru` crate) | Hard entry limit. | Cyclic access just above capacity misses every time. |
-| S3-FIFO | Protects hot entries during scans. | Slower adaptation to switching sets; extra metadata. |
+| S3-FIFO | Protects hot entries during scans. | Adapts more slowly to switching sets. Requires extra metadata. |
 | Retain everything | Preserves all available reuse. | Unbounded growth with new states. |
 
-This study uses a flush-aware model with per-access ordering. The PR uses flush stamps; its results are in the direct comparison above.
+This study uses a flush-aware model with per-access ordering. The PR uses flush stamps. Its results are in the direct comparison above.
 
 <details>
 <summary>Policy-study workloads and full results</summary>
 
-W is workload scale; C is capacity. The CPU sweep varies capacity from 32 to 512 for each fixed trace.
+W is workload scale. C is capacity. The CPU sweep varies capacity from 32 to 512 for each fixed trace.
 
 | Workload | Access pattern |
 | --- | --- |
@@ -172,7 +172,7 @@ Even unlimited retention must create pipelines for new states.
 
 Measured processes start with empty FemtoVG caches and `MTL_SHADER_CACHE_SIZE` unset.
 
-The first LRU hot-scan priming pass peaked at 7482.02 ms; the second at 124.36 ms. [Priming observations](results/pr-report-d5241b9/analysis/priming.md).
+The first LRU hot-scan priming pass peaked at 7482.02 ms. The second peaked at 124.36 ms. [Priming observations](results/pr-report-d5241b9/analysis/priming.md).
 
 The override diagnostic creates the same 17 pipelines in each first frame:
 
@@ -200,16 +200,16 @@ Results come from one machine. Process memory measurements do not establish a pe
 <details>
 <summary>Source pins, measurement method, uncertainty and validation</summary>
 
-- **Hardware/software:** Apple M4 Max/Metal; macOS-26.6.2-arm64-arm-64bit; rustc 1.96.0 (ac68faa20 2026-05-25).
+- **Hardware/software:** Apple M4 Max/Metal. macOS-26.6.2-arm64-arm-64bit. rustc 1.96.0 (ac68faa20 2026-05-25).
 - **Render target:** 64×64 RGBA8, emphasizing pipeline management costs.
 - **Source:** PR `d5241b9`, upstream `fa5d6a3`. Renderer verified before instrumentation. [Pins and checksums](vendor/report-source.json).
 - **Build:** shared base, dependency lockfile, features and release settings.
 
 | Experiment | Measured processes | Frames summarized per process |
 | --- | ---: | --- |
-| Direct comparison | 240; 10 per case | 100, after one initial and five warmup frames |
-| Policy study | 320; 10 per case | 90, from frames 10–99 |
-| Confirmation | 120; 20 per case | 100, after one initial and five warmup frames |
+| Direct comparison | 240. 10 per case | 100, after one initial and five warmup frames |
+| Policy study | 320. 10 per case | 90, from frames 10–99 |
+| Confirmation | 120. 20 per case | 100, after one initial and five warmup frames |
 
 - **Order:** the main campaign rotates workload/policy order and includes 7,200 CPU simulations. Only shuffled traces vary with seed.
 - **Timing:** completed time includes command construction, encoding, submission and the GPU wait. CPU time stops before the wait.
@@ -226,7 +226,7 @@ Results come from one machine. Process memory measurements do not establish a pe
 
 **Validation:**
 
-- Direct boundary tests assert the initial pipeline count; repeated runs match creation/residency profiles.
+- Direct boundary tests assert the initial pipeline count. Repeated runs match creation/residency profiles.
 - Every policy-study GPU flush checks creations and retention against the CPU model.
 - WGPU validation errors fail the run. Totals exclude priming and the Metal diagnostic.
 
@@ -238,7 +238,7 @@ Results come from one machine. Process memory measurements do not establish a pe
 
 ## Reproduce and inspect
 
-Pinned sources, patches, scripts and raw data are included. Requires Rust, Python, Git and a GPU backend; the Metal diagnostic requires macOS.
+Pinned sources, patches, scripts and raw data are included. Requires Rust, Python, Git and a GPU backend. The Metal diagnostic requires macOS.
 
 ```sh
 python3 scripts/run-report.py --out runs/my-pr-report

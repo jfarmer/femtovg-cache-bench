@@ -218,7 +218,7 @@ def main():
                '| Numbered | N−1 blend states, followed by a separate clear flush. N includes the clear pipeline. |',
                '| Mixed | Glyph-atlas, clipped-layer, blur, screen and clear operations. |', '',
                'Strict LRU 128 has twice the proposed retention target.', '',
-               'Times include CPU work and the GPU completion wait. Each row summarizes ten processes. Brackets give median intervals; see [measurement details](#measurement-and-validation).', '',
+               'Times include CPU work and the GPU completion wait. Each row summarizes ten processes. Brackets give median intervals. See [measurement details](#measurement-and-validation).', '',
                '| Workload | Policy | Creations/frame | Median [interval] (ms) | p95 (ms) |',
                '| --- | --- | ---: | ---: | ---: |']
     for scenario in ('63', '64', '65', '80', '129', 'mixed'):
@@ -228,7 +228,7 @@ def main():
             ci = evidence['median_intervals'][f'direct/{case}']
             label = {'upstream': 'Upstream', 'pr343': '#343', 'flush-lru64': 'Proposed 64', 'strict-lru128': 'Strict LRU 128'}[policy]
             report.append(f"| {scenario} | {label} | {m['created_per_frame']:.0f} | {ci['median']:.3f} [{ci['lower']:.3f}, {ci['upper']:.3f}] | {m['completed_p95_ms']:.3f} |")
-    report += ['', f'[Additional quantiles and within-round ratios]({link}/analysis/tables.md). Ratios pair process medians within a round; they are not ratios of aggregate medians.', '', '</details>', '']
+    report += ['', f'[Additional quantiles and within-round ratios]({link}/analysis/tables.md). Ratios pair process medians within a round. They are not ratios of aggregate medians.', '', '</details>', '']
 
     confirmation = ROOT / 'results/confirmation-d5241b9'
     confirmed = False
@@ -249,7 +249,7 @@ def main():
         report += ['', 'At 64 states and in the mixed workload, paired results show no obvious regression. Statistical equivalence was not tested.', '',
                    '<details>', '<summary>Confirmation protocol and paired results</summary>', '',
                    '- Twenty adjacent pairs per workload, with randomized, balanced policy order fixed before measurement.',
-                   f"- Median proposed/#343 paired ratios: {statistics.median(paired['64']):.3f} at 64 states; {statistics.median(paired['mixed']):.3f} for mixed operations.",
+                   f"- Median proposed/#343 paired ratios: {statistics.median(paired['64']):.3f} at 64 states. For mixed operations, the ratio is {statistics.median(paired['mixed']):.3f}.",
                    '- All 120 measured and 12 priming runs match the primary creation/residency profiles. No runs excluded.',
                    '- Results remain separate from the primary estimates.', '',
                    '[Full protocol, individual pairs and raw data](results/confirmation-d5241b9/README.md).', '', '</details>', '']
@@ -257,13 +257,13 @@ def main():
     report += ['## Other policies', '',
                '**The choice remains open: reuse, memory limits and scan resistance favor different policies.**', '',
                '| Policy | Benefit | Cost |', '| --- | --- | --- |',
-               '| Flush-aware | Reuses large working sets within a flush. | Can exceed capacity; sensitive to flush boundaries. |',
+               '| Flush-aware | Reuses large working sets within a flush. | Can exceed capacity. Sensitive to flush boundaries. |',
                '| Strict LRU (`lru` crate) | Hard entry limit. | Cyclic access just above capacity misses every time. |',
-               '| S3-FIFO | Protects hot entries during scans. | Slower adaptation to switching sets; extra metadata. |',
+               '| S3-FIFO | Protects hot entries during scans. | Adapts more slowly to switching sets. Requires extra metadata. |',
                '| Retain everything | Preserves all available reuse. | Unbounded growth with new states. |', '',
-               'This study uses a flush-aware model with per-access ordering. The PR uses flush stamps; its results are in the direct comparison above.', '',
+               'This study uses a flush-aware model with per-access ordering. The PR uses flush stamps. Its results are in the direct comparison above.', '',
                '<details>', '<summary>Policy-study workloads and full results</summary>', '',
-               'W is workload scale; C is capacity. The CPU sweep varies capacity from 32 to 512 for each fixed trace.', '',
+               'W is workload scale. C is capacity. The CPU sweep varies capacity from 32 to 512 for each fixed trace.', '',
                '| Workload | Access pattern |', '| --- | --- |',
                '| Cycle/shuffle-plus | W+1 states, in cyclic or shuffled order. |',
                '| Hot-scan | A hot set interleaved with new states. |',
@@ -283,8 +283,8 @@ def main():
                '<details>', '<summary>Priming, cache-override diagnostic and timing drift</summary>', '',
                'Measured processes start with empty FemtoVG caches and `MTL_SHADER_CACHE_SIZE` unset.', '',
                'The first LRU hot-scan priming pass peaked at '
-               f"{evidence['priming']['policies/hot-scan/W64/C64/lru']['phase_peaks']['scan']['priming_max_ms_by_pass'][1]:.2f} ms; "
-               f"the second at {evidence['priming']['policies/hot-scan/W64/C64/lru']['phase_peaks']['scan']['priming_max_ms_by_pass'][2]:.2f} ms. "
+               f"{evidence['priming']['policies/hot-scan/W64/C64/lru']['phase_peaks']['scan']['priming_max_ms_by_pass'][1]:.2f} ms. "
+               f"The second peaked at {evidence['priming']['policies/hot-scan/W64/C64/lru']['phase_peaks']['scan']['priming_max_ms_by_pass'][2]:.2f} ms. "
                f'[Priming observations]({link}/analysis/priming.md).', '']
     if 'cold_control' in evidence:
         report += ['The override diagnostic creates the same 17 pipelines in each first frame:', '',
@@ -304,15 +304,15 @@ def main():
                f"**{evidence['gpu_frames']:,} measured frames and {evidence['gpu_flushes']:,} flushes checked cache behavior and GPU execution.** Rendered pixels were not compared.", '',
                'Results come from one machine. Process memory measurements do not establish a per-pipeline memory cost.', '',
                '<details>', '<summary>Source pins, measurement method, uncertainty and validation</summary>', '',
-               f"- **Hardware/software:** {adapter}/{backend}; {meta['platform']}; {meta['rustc'].splitlines()[0]}.",
+               f"- **Hardware/software:** {adapter}/{backend}. {meta['platform']}. {meta['rustc'].splitlines()[0]}.",
                '- **Render target:** 64×64 RGBA8, emphasizing pipeline management costs.',
                f"- **Source:** PR `{meta['source']['candidate']['commit'][:7]}`, upstream `{meta['source']['base']['commit'][:7]}`. Renderer verified before instrumentation. [Pins and checksums](vendor/report-source.json).",
                '- **Build:** shared base, dependency lockfile, features and release settings.', '',
                '| Experiment | Measured processes | Frames summarized per process |', '| --- | ---: | --- |',
-               f'| Direct comparison | {len(a)}; 10 per case | 100, after one initial and five warmup frames |',
-               f'| Policy study | {len(b)}; 10 per case | 90, from frames 10–99 |']
+               f'| Direct comparison | {len(a)}. 10 per case | 100, after one initial and five warmup frames |',
+               f'| Policy study | {len(b)}. 10 per case | 90, from frames 10–99 |']
     if confirmed:
-        report.append('| Confirmation | 120; 20 per case | 100, after one initial and five warmup frames |')
+        report.append('| Confirmation | 120. 20 per case | 100, after one initial and five warmup frames |')
     report += ['', '- **Order:** the main campaign rotates workload/policy order and includes 7,200 CPU simulations. Only shuffled traces vary with seed.',
                '- **Timing:** completed time includes command construction, encoding, submission and the GPU wait. CPU time stops before the wait.',
                '- **Aggregation:** nearest-rank quantiles per process, then medians across processes. With 90 frames, p99 is effectively the process maximum.',
@@ -323,13 +323,13 @@ def main():
                '- Intervals are pointwise and do not describe variation across machines.', '',
                '[Interval method](https://itl.nist.gov/div898/software/dataplot/refman1/auxillar/mediancl.htm).', '',
                '**Validation:**', '',
-               '- Direct boundary tests assert the initial pipeline count; repeated runs match creation/residency profiles.',
+               '- Direct boundary tests assert the initial pipeline count. Repeated runs match creation/residency profiles.',
                '- Every policy-study GPU flush checks creations and retention against the CPU model.',
                '- WGPU validation errors fail the run. Totals exclude priming and the Metal diagnostic.', '',
                '**Memory limits:** RSS and physical footprint include setup and cold work. The policy study also runs a CPU simulation before GPU initialization. Metal counters omit private compiler/driver memory.', '',
                f'[Full protocol](docs/report-protocol.md) and [metadata]({link}/metadata.json).', '', '</details>', '',
                '## Reproduce and inspect', '',
-               'Pinned sources, patches, scripts and raw data are included. Requires Rust, Python, Git and a GPU backend; the Metal diagnostic requires macOS.', '',
+               'Pinned sources, patches, scripts and raw data are included. Requires Rust, Python, Git and a GPU backend. The Metal diagnostic requires macOS.', '',
                '```sh', 'python3 scripts/run-report.py --out runs/my-pr-report', 'python3 scripts/report-sanity.py runs/my-pr-report',
                'python3 scripts/render-report.py runs/my-pr-report', '```', '',
                'The report generator includes the published confirmation separately when source pins match.', '',
