@@ -1,0 +1,24 @@
+{
+  "harness_commit": "b0f5f5a67c422cac96a893138a5b1209c85b3e1a",
+  "raw_copy_verified": true,
+  "files": {
+    "Cargo.lock": "27924f3a0b5a1d0d1da4404b4fc6d36b98d12351bfc825198b6ee31042de2cf8",
+    "analysis/cold-control.md": "17ab75be58c1b7bc9bc10afac27914770b07e1b90a71d604bd1ae69ce2510404",
+    "analysis/evidence.json": "0497e461a227b5b88348d35472916b24623bff1f9528f46542f709a40f1444a6",
+    "analysis/priming.md": "27d58730f2d4511d68a5fffea38722b443b26cb6dc22b8266eff6a98b40c0466",
+    "analysis/sanity.json": "a6ef14514df5f93e7d3d73317222e5e699ccac1f28ca0e86ad06ef3255c87bc8",
+    "analysis/sanity.md": "075aa13661fe55057adf73fcd16395734222ea8fd13ed77955b819cdd05c7945",
+    "analysis/tables.md": "d5c67e67cff673f03f0359da325b0d9b51ac29b8e84055884b5c00a8090a90de",
+    "analysis/timing.csv": "1001de3ce889e7785ea1212af020381d1904c947d93a0cf11ef0b92997fe59f2",
+    "cold-control/runs.jsonl.gz": "909034b17ddd8c798d8cc8da6bdc2ad9e9a7aa662e3a5aad8b91ed0bd0534e60",
+    "direct/priming.jsonl.gz": "7d6470c40d2830f0cce79954e701adccc48043130dff1065eecf64cf5b0b48c9",
+    "direct/runs.jsonl.gz": "362decb38539398d2ebbfc95ffbfbe7f976efa4feaf0dd8a5b12428c7d26dd1e",
+    "direct/summary.json": "5fc45ae2173d2c048bfccd5219e30162095dca5fa7be444be3c1bb410ce2970c",
+    "metadata.json": "c3f12e03f99f4f361320094971068fb105fac5d32d9b8d511748dcb109a40bb9",
+    "policies/gpu.jsonl.gz": "72e624fc4d9d71db2e3c7da1a80104a69b873dd5e6f5fa5686f8c81a0795fc7e",
+    "policies/priming.jsonl.gz": "86bc722cd0ec97a82fb402426a7ec7928fc30e5dfb02a75ad5785b26add0eb57",
+    "policies/simulation-summary.json": "1773d04df3571de33012ad0ad1bc905421b935b10b1c7e26778cf5a5adffe53a",
+    "policies/simulation.jsonl.gz": "efce056352335f1e7281fd9f58bf7934f1d18d196916545e88895c2087430ab0",
+    "policies/summary.json": "83b5db5a79034979a6b1c6d9114d86f7e2a2a8725b72d6503e25b3a939d3b486"
+  }
+}

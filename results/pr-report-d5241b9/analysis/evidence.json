@@ -1,0 +1,4202 @@
+{
+  "cold_control": {
+    "flush-lru64/0": {
+      "first_frames_ms": [
+        613.4008749999999,
+        613.8999170000001,
+        614.58875
+      ],
+      "measured_ms": [
+        0.678042,
+        0.5323335,
+        0.6491045
+      ]
+    },
+    "flush-lru64/None": {
+      "first_frames_ms": [
+        15.651584,
+        15.738375,
+        15.986375
+      ],
+      "measured_ms": [
+        0.6516455,
+        0.35785449999999996,
+        0.545646
+      ]
+    },
+    "upstream/0": {
+      "first_frames_ms": [
+        612.902667,
+        614.372208,
+        614.5994999999999
+      ],
+      "measured_ms": [
+        7.0377495,
+        6.8600625,
+        6.883062499999999
+      ]
+    },
+    "upstream/None": {
+      "first_frames_ms": [
+        15.68,
+        15.793958,
+        15.884540999999999
+      ],
+      "measured_ms": [
+        6.9950835,
+        7.1371459999999995,
+        6.9074995
+      ]
+    }
+  },
+  "direct_processes": 240,
+  "gpu_flushes": 243600,
+  "gpu_frames": 57440,
+  "median_intervals": {
+    "direct/129/flush-lru64": {
+      "coverage": 0.978515625,
+      "lower": 27.461917,
+      "lower_rank": 2,
+      "median": 28.243083,
+      "n": 10,
+      "requested_coverage": 0.95,
+      "upper": 40.19,
+      "upper_rank": 9
+    },
+    "direct/129/pr343": {
+      "coverage": 0.978515625,
+      "lower": 52.71275,
+      "lower_rank": 2,
+      "median": 53.804916500000004,
+      "n": 10,
+      "requested_coverage": 0.95,
+      "upper": 56.299917,
+      "upper_rank": 9
+    },
+    "direct/129/strict-lru128": {
+      "coverage": 0.978515625,
+      "lower": 53.109667,
+      "lower_rank": 2,
+      "median": 54.180896000000004,
+      "n": 10,
+      "requested_coverage": 0.95,
+      "upper": 66.935458,
+      "upper_rank": 9
+    },
+    "direct/129/upstream": {
+      "coverage": 0.978515625,
+      "lower": 53.239458000000006,
+      "lower_rank": 2,
+      "median": 54.410812500000006,
+      "n": 10,
+      "requested_coverage": 0.95,
+      "upper": 57.390459,
+      "upper_rank": 9
+    },
+    "direct/63/flush-lru64": {
+      "coverage": 0.978515625,
+      "lower": 0.349666,
+      "lower_rank": 2,
+      "median": 0.3825415,
+      "n": 10,
+      "requested_coverage": 0.95,
+      "upper": 1.009542,
+      "upper_rank": 9
+    },
+    "direct/63/pr343": {
+      "coverage": 0.978515625,
+      "lower": 0.317709,
+      "lower_rank": 2,
+      "median": 0.3668545,
+      "n": 10,
+      "requested_coverage": 0.95,
+      "upper": 0.668375,
+      "upper_rank": 9
+    },
+    "direct/63/strict-lru128": {
+      "coverage": 0.978515625,
+      "lower": 0.350292,
+      "lower_rank": 2,
+      "median": 0.42525,
+      "n": 10,
+      "requested_coverage": 0.95,
+      "upper": 0.87125,
+      "upper_rank": 9
+    },
+    "direct/63/upstream": {
+      "coverage": 0.978515625,
+      "lower": 25.912833,
+      "lower_rank": 2,
+      "median": 26.563353999999997,
+      "n": 10,
+      "requested_coverage": 0.95,
+      "upper": 30.124499999999998,
+      "upper_rank": 9
+    },
+    "direct/64/flush-lru64": {
+      "coverage": 0.978515625,
+      "lower": 0.35070799999999996,
+      "lower_rank": 2,
+      "median": 0.47281300000000004,
+      "n": 10,
+      "requested_coverage": 0.95,
+      "upper": 0.942041,
+      "upper_rank": 9
+    },
+    "direct/64/pr343": {
+      "coverage": 0.978515625,
+      "lower": 0.355,
+      "lower_rank": 2,
+      "median": 0.376854,
+      "n": 10,
+      "requested_coverage": 0.95,
+      "upper": 0.849625,
+      "upper_rank": 9
+    },
+    "direct/64/strict-lru128": {
+      "coverage": 0.978515625,
+      "lower": 0.354334,
+      "lower_rank": 2,
+      "median": 0.441292,
+      "n": 10,
+      "requested_coverage": 0.95,
+      "upper": 0.601208,
+      "upper_rank": 9
+    },
+    "direct/64/upstream": {
+      "coverage": 0.978515625,
+      "lower": 26.407708,
+      "lower_rank": 2,
+      "median": 26.996396,
+      "n": 10,
+      "requested_coverage": 0.95,
+      "upper": 29.278042,
+      "upper_rank": 9
+    },
+    "direct/65/flush-lru64": {
+      "coverage": 0.978515625,
+      "lower": 1.128541,
+      "lower_rank": 2,
+      "median": 1.1865835,
+      "n": 10,
+      "requested_coverage": 0.95,
+      "upper": 1.273834,
+      "upper_rank": 9
+    },
+    "direct/65/pr343": {
+      "coverage": 0.978515625,
+      "lower": 26.529625000000003,
+      "lower_rank": 2,
+      "median": 27.184375,
+      "n": 10,
+      "requested_coverage": 0.95,
+      "upper": 28.782417000000002,
+      "upper_rank": 9
+    },
+    "direct/65/strict-lru128": {
+      "coverage": 0.978515625,
+      "lower": 0.35525,
+      "lower_rank": 2,
+      "median": 0.3941875,
+      "n": 10,
+      "requested_coverage": 0.95,
+      "upper": 0.603041,
+      "upper_rank": 9
+    },
+    "direct/65/upstream": {
+      "coverage": 0.978515625,
+      "lower": 26.733916,
+      "lower_rank": 2,
+      "median": 27.3469585,
+      "n": 10,
+      "requested_coverage": 0.95,
+      "upper": 28.943334,
+      "upper_rank": 9
+    },
+    "direct/80/flush-lru64": {
+      "coverage": 0.978515625,
+      "lower": 7.2277499999999995,
+      "lower_rank": 2,
+      "median": 7.4749375,
+      "n": 10,
+      "requested_coverage": 0.95,
+      "upper": 8.654375,
+      "upper_rank": 9
+    },
+    "direct/80/pr343": {
+      "coverage": 0.978515625,
+      "lower": 32.77275,
+      "lower_rank": 2,
+      "median": 33.3381045,
+      "n": 10,
+      "requested_coverage": 0.95,
+      "upper": 34.580042,
+      "upper_rank": 9
+    },
+    "direct/80/strict-lru128": {
+      "coverage": 0.978515625,
+      "lower": 0.38041600000000003,
+      "lower_rank": 2,
+      "median": 0.4394585,
+      "n": 10,
+      "requested_coverage": 0.95,
+      "upper": 0.700875,
+      "upper_rank": 9
+    },
+    "direct/80/upstream": {
+      "coverage": 0.978515625,
+      "lower": 33.155625,
+      "lower_rank": 2,
+      "median": 33.59587499999999,
+      "n": 10,
+      "requested_coverage": 0.95,
+      "upper": 35.265709,
+      "upper_rank": 9
+    },
+    "direct/mixed/flush-lru64": {
+      "coverage": 0.978515625,
+      "lower": 0.723166,
+      "lower_rank": 2,
+      "median": 0.7816255,
+      "n": 10,
+      "requested_coverage": 0.95,
+      "upper": 0.9120419999999999,
+      "upper_rank": 9
+    },
+    "direct/mixed/pr343": {
+      "coverage": 0.978515625,
+      "lower": 0.716291,
+      "lower_rank": 2,
+      "median": 0.783375,
+      "n": 10,
+      "requested_coverage": 0.95,
+      "upper": 1.661,
+      "upper_rank": 9
+    },
+    "direct/mixed/strict-lru128": {
+      "coverage": 0.978515625,
+      "lower": 0.72175,
+      "lower_rank": 2,
+      "median": 0.7802290000000001,
+      "n": 10,
+      "requested_coverage": 0.95,
+      "upper": 1.021042,
+      "upper_rank": 9
+    },
+    "direct/mixed/upstream": {
+      "coverage": 0.978515625,
+      "lower": 10.242375,
+      "lower_rank": 2,
+      "median": 10.5023125,
+      "n": 10,
+      "requested_coverage": 0.95,
+      "upper": 12.558665999999999,
+      "upper_rank": 9
+    },
+    "policies/batch-single/scale64/cap64/flush-lru": {
+      "coverage": 0.978515625,
+      "lower": 0.655333,
+      "lower_rank": 2,
+      "median": 0.6595415,
+      "n": 10,
+      "requested_coverage": 0.95,
+      "upper": 0.663417,
+      "upper_rank": 9
+    },
+    "policies/batch-single/scale64/cap64/lru": {
+      "coverage": 0.978515625,
+      "lower": 101.270917,
+      "lower_rank": 2,
+      "median": 102.35849999999999,
+      "n": 10,
+      "requested_coverage": 0.95,
+      "upper": 103.14491600000001,
+      "upper_rank": 9
+    },
+    "policies/batch-single/scale64/cap64/retain": {
+      "coverage": 0.978515625,
+      "lower": 0.672041,
+      "lower_rank": 2,
+      "median": 0.6742505,
+      "n": 10,
+      "requested_coverage": 0.95,
+      "upper": 0.6784579999999999,
+      "upper_rank": 9
+    },
+    "policies/batch-single/scale64/cap64/s3fifo": {
+      "coverage": 0.978515625,
+      "lower": 101.412875,
+      "lower_rank": 2,
+      "median": 102.584271,
+      "n": 10,
+      "requested_coverage": 0.95,
+      "upper": 103.411458,
+      "upper_rank": 9
+    },
+    "policies/batch-split/scale64/cap64/flush-lru": {
+      "coverage": 0.978515625,
+      "lower": 102.553792,
+      "lower_rank": 2,
+      "median": 103.21825,
+      "n": 10,
+      "requested_coverage": 0.95,
+      "upper": 103.934416,
+      "upper_rank": 9
+    },
+    "policies/batch-split/scale64/cap64/lru": {
+      "coverage": 0.978515625,
+      "lower": 102.0805,
+      "lower_rank": 2,
+      "median": 103.2035205,
+      "n": 10,
+      "requested_coverage": 0.95,
+      "upper": 104.102917,
+      "upper_rank": 9
+    },
+    "policies/batch-split/scale64/cap64/retain": {
+      "coverage": 0.978515625,
+      "lower": 1.6813749999999998,
+      "lower_rank": 2,
+      "median": 1.707208,
+      "n": 10,
+      "requested_coverage": 0.95,
+      "upper": 1.72825,
+      "upper_rank": 9
+    },
+    "policies/batch-split/scale64/cap64/s3fifo": {
+      "coverage": 0.978515625,
+      "lower": 102.58775,
+      "lower_rank": 2,
+      "median": 103.37297950000001,
+      "n": 10,
+      "requested_coverage": 0.95,
+      "upper": 104.380291,
+      "upper_rank": 9
+    },
+    "policies/cycle-plus/scale128/cap128/flush-lru": {
+      "coverage": 0.978515625,
+      "lower": 1.188667,
+      "lower_rank": 2,
+      "median": 1.323292,
+      "n": 10,
+      "requested_coverage": 0.95,
+      "upper": 1.3280830000000001,
+      "upper_rank": 9
+    },
+    "policies/cycle-plus/scale128/cap128/lru": {
+      "coverage": 0.978515625,
+      "lower": 51.202334,
+      "lower_rank": 2,
+      "median": 51.6702085,
+      "n": 10,
+      "requested_coverage": 0.95,
+      "upper": 52.25125,
+      "upper_rank": 9
+    },
+    "policies/cycle-plus/scale128/cap128/retain": {
+      "coverage": 0.978515625,
+      "lower": 0.47437500000000005,
+      "lower_rank": 2,
+      "median": 0.47775,
+      "n": 10,
+      "requested_coverage": 0.95,
+      "upper": 0.492792,
+      "upper_rank": 9
+    },
+    "policies/cycle-plus/scale128/cap128/s3fifo": {
+      "coverage": 0.978515625,
+      "lower": 3.17775,
+      "lower_rank": 2,
+      "median": 3.2875630000000005,
+      "n": 10,
+      "requested_coverage": 0.95,
+      "upper": 3.501584,
+      "upper_rank": 9
+    },
+    "policies/cycle-plus/scale64/cap64/flush-lru": {
+      "coverage": 0.978515625,
+      "lower": 1.069375,
+      "lower_rank": 2,
+      "median": 1.141188,
+      "n": 10,
+      "requested_coverage": 0.95,
+      "upper": 1.151459,
+      "upper_rank": 9
+    },
+    "policies/cycle-plus/scale64/cap64/lru": {
+      "coverage": 0.978515625,
+      "lower": 25.603417,
+      "lower_rank": 2,
+      "median": 25.949416499999998,
+      "n": 10,
+      "requested_coverage": 0.95,
+      "upper": 26.426000000000002,
+      "upper_rank": 9
+    },
+    "policies/cycle-plus/scale64/cap64/retain": {
+      "coverage": 0.978515625,
+      "lower": 0.362542,
+      "lower_rank": 2,
+      "median": 0.36602100000000004,
+      "n": 10,
+      "requested_coverage": 0.95,
+      "upper": 0.598916,
+      "upper_rank": 9
+    },
+    "policies/cycle-plus/scale64/cap64/s3fifo": {
+      "coverage": 0.978515625,
+      "lower": 2.3890000000000002,
+      "lower_rank": 2,
+      "median": 2.4226665,
+      "n": 10,
+      "requested_coverage": 0.95,
+      "upper": 2.468417,
+      "upper_rank": 9
+    },
+    "policies/hot-scan/scale64/cap64/flush-lru": {
+      "coverage": 0.978515625,
+      "lower": 0.62075,
+      "lower_rank": 2,
+      "median": 0.6366665,
+      "n": 10,
+      "requested_coverage": 0.95,
+      "upper": 0.869375,
+      "upper_rank": 9
+    },
+    "policies/hot-scan/scale64/cap64/lru": {
+      "coverage": 0.978515625,
+      "lower": 0.6194590000000001,
+      "lower_rank": 2,
+      "median": 0.6264375,
+      "n": 10,
+      "requested_coverage": 0.95,
+      "upper": 0.6315000000000001,
+      "upper_rank": 9
+    },
+    "policies/hot-scan/scale64/cap64/retain": {
+      "coverage": 0.978515625,
+      "lower": 0.629208,
+      "lower_rank": 2,
+      "median": 0.6391039999999999,
+      "n": 10,
+      "requested_coverage": 0.95,
+      "upper": 0.727167,
+      "upper_rank": 9
+    },
+    "policies/hot-scan/scale64/cap64/s3fifo": {
+      "coverage": 0.978515625,
+      "lower": 0.6292500000000001,
+      "lower_rank": 2,
+      "median": 0.643354,
+      "n": 10,
+      "requested_coverage": 0.95,
+      "upper": 0.863625,
+      "upper_rank": 9
+    },
+    "policies/shuffle-plus/scale128/cap128/flush-lru": {
+      "coverage": 0.978515625,
+      "lower": 1.319833,
+      "lower_rank": 2,
+      "median": 1.327729,
+      "n": 10,
+      "requested_coverage": 0.95,
+      "upper": 1.329709,
+      "upper_rank": 9
+    },
+    "policies/shuffle-plus/scale128/cap128/lru": {
+      "coverage": 0.978515625,
+      "lower": 3.1325,
+      "lower_rank": 2,
+      "median": 3.203563,
+      "n": 10,
+      "requested_coverage": 0.95,
+      "upper": 3.406125,
+      "upper_rank": 9
+    },
+    "policies/shuffle-plus/scale128/cap128/retain": {
+      "coverage": 0.978515625,
+      "lower": 0.478375,
+      "lower_rank": 2,
+      "median": 0.481396,
+      "n": 10,
+      "requested_coverage": 0.95,
+      "upper": 0.49066699999999996,
+      "upper_rank": 9
+    },
+    "policies/shuffle-plus/scale128/cap128/s3fifo": {
+      "coverage": 0.978515625,
+      "lower": 2.779,
+      "lower_rank": 2,
+      "median": 2.850396,
+      "n": 10,
+      "requested_coverage": 0.95,
+      "upper": 3.1200419999999998,
+      "upper_rank": 9
+    },
+    "policies/shuffle-plus/scale64/cap64/flush-lru": {
+      "coverage": 0.978515625,
+      "lower": 1.143584,
+      "lower_rank": 2,
+      "median": 1.149375,
+      "n": 10,
+      "requested_coverage": 0.95,
+      "upper": 1.157708,
+      "upper_rank": 9
+    },
+    "policies/shuffle-plus/scale64/cap64/lru": {
+      "coverage": 0.978515625,
+      "lower": 2.4086250000000002,
+      "lower_rank": 2,
+      "median": 2.685063,
+      "n": 10,
+      "requested_coverage": 0.95,
+      "upper": 2.7008750000000004,
+      "upper_rank": 9
+    },
+    "policies/shuffle-plus/scale64/cap64/retain": {
+      "coverage": 0.978515625,
+      "lower": 0.36325,
+      "lower_rank": 2,
+      "median": 0.3829375,
+      "n": 10,
+      "requested_coverage": 0.95,
+      "upper": 0.386375,
+      "upper_rank": 9
+    },
+    "policies/shuffle-plus/scale64/cap64/s3fifo": {
+      "coverage": 0.978515625,
+      "lower": 1.731791,
+      "lower_rank": 2,
+      "median": 1.778562,
+      "n": 10,
+      "requested_coverage": 0.95,
+      "upper": 1.9910420000000002,
+      "upper_rank": 9
+    },
+    "policies/switch/scale64/cap64/flush-lru": {
+      "coverage": 0.978515625,
+      "lower": 0.521834,
+      "lower_rank": 2,
+      "median": 0.5259585,
+      "n": 10,
+      "requested_coverage": 0.95,
+      "upper": 0.529375,
+      "upper_rank": 9
+    },
+    "policies/switch/scale64/cap64/lru": {
+      "coverage": 0.978515625,
+      "lower": 0.525458,
+      "lower_rank": 2,
+      "median": 0.5297295,
+      "n": 10,
+      "requested_coverage": 0.95,
+      "upper": 0.533,
+      "upper_rank": 9
+    },
+    "policies/switch/scale64/cap64/retain": {
+      "coverage": 0.978515625,
+      "lower": 0.35825,
+      "lower_rank": 2,
+      "median": 0.523104,
+      "n": 10,
+      "requested_coverage": 0.95,
+      "upper": 0.525917,
+      "upper_rank": 9
+    },
+    "policies/switch/scale64/cap64/s3fifo": {
+      "coverage": 0.978515625,
+      "lower": 0.538667,
+      "lower_rank": 2,
+      "median": 0.5428535,
+      "n": 10,
+      "requested_coverage": 0.95,
+      "upper": 0.553083,
+      "upper_rank": 9
+    }
+  },
+  "paired_ratios": {
+    "129": {
+      "coverage": 0.978515625,
+      "lower": 0.5207603283835505,
+      "lower_rank": 2,
+      "median": 0.5235610229563966,
+      "n": 10,
+      "per_round_ratios": [
+        0.724224069773466,
+        0.7800766011676167,
+        0.5320255243894657,
+        0.5243147161300433,
+        0.5269992057921761,
+        0.5228073297827499,
+        0.5194482795413972,
+        0.5223099288849972,
+        0.5207603283835505,
+        0.5215480501475417
+      ],
+      "requested_coverage": 0.95,
+      "upper": 0.724224069773466,
+      "upper_rank": 9
+    },
+    "63": {
+      "coverage": 0.978515625,
+      "lower": 0.946636244623153,
+      "lower_rank": 2,
+      "median": 1.0178991490640263,
+      "n": 10,
+      "per_round_ratios": [
+        0.946636244623153,
+        1.1500157960371344,
+        1.5878519828056703,
+        1.0221985795209478,
+        0.9498259932711888,
+        0.9430246607262291,
+        1.013599718607105,
+        1.2491777066435006,
+        1.0063212174281315,
+        1.2155449035376145
+      ],
+      "requested_coverage": 0.95,
+      "upper": 1.2491777066435006,
+      "upper_rank": 9
+    },
+    "64": {
+      "coverage": 0.978515625,
+      "lower": 0.9523299468769949,
+      "lower_rank": 2,
+      "median": 0.99437651223822,
+      "n": 10,
+      "per_round_ratios": [
+        0.9666211040180247,
+        1.1087726938355158,
+        0.9263242020211823,
+        1.0391558335527171,
+        0.9773571549996793,
+        1.5346145833333333,
+        0.9969699258848908,
+        1.1065825591568768,
+        0.9917830985915493,
+        0.9523299468769949
+      ],
+      "requested_coverage": 0.95,
+      "upper": 1.1087726938355158,
+      "upper_rank": 9
+    },
+    "65": {
+      "coverage": 0.978515625,
+      "lower": 0.04226720128912489,
+      "lower_rank": 2,
+      "median": 0.04287208548491865,
+      "n": 10,
+      "per_round_ratios": [
+        0.046083417441706374,
+        0.04260556019322491,
+        0.07959708220089341,
+        0.042342938051726765,
+        0.04299147954228721,
+        0.04637910344289548,
+        0.04204634981383893,
+        0.04331665397455228,
+        0.04226720128912489,
+        0.042752691427550095
+      ],
+      "requested_coverage": 0.95,
+      "upper": 0.04637910344289548,
+      "upper_rank": 9
+    },
+    "80": {
+      "coverage": 0.978515625,
+      "lower": 0.22054145593519003,
+      "lower_rank": 2,
+      "median": 0.22375567515829223,
+      "n": 10,
+      "per_round_ratios": [
+        0.22338394590845442,
+        0.24080663649637157,
+        0.2517673344641976,
+        0.23356613997994077,
+        0.2243047081307803,
+        0.22412740440813003,
+        0.2231869983935748,
+        0.22025520202668544,
+        0.22054145593519003,
+        0.22154753109223
+      ],
+      "requested_coverage": 0.95,
+      "upper": 0.24080663649637157,
+      "upper_rank": 9
+    },
+    "mixed": {
+      "coverage": 0.978515625,
+      "lower": 0.8707597832630944,
+      "lower_rank": 2,
+      "median": 0.9950440981844197,
+      "n": 10,
+      "per_round_ratios": [
+        0.9765686628511902,
+        0.9918319010921991,
+        0.5490921131848283,
+        1.0745159101922144,
+        1.047876200100388,
+        1.2072549264280867,
+        1.0486397305568884,
+        0.9537543749014662,
+        0.9982562952766404,
+        0.8707597832630944
+      ],
+      "requested_coverage": 0.95,
+      "upper": 1.0745159101922144,
+      "upper_rank": 9
+    }
+  },
+  "priming": {
+    "direct/129/flush-lru64": {
+      "first_frame_ms_by_priming_pass": {
+        "1": 69.341834,
+        "2": 68.49925
+      },
+      "measured_first_frames_ms": [
+        75.66725000000001,
+        75.150875,
+        70.766833,
+        73.409959,
+        76.856041,
+        69.60933299999999,
+        68.41333300000001,
+        68.036,
+        68.312208,
+        67.943792
+      ],
+      "phase_peaks": {
+        "cold": {
+          "measured_process_maxima_ms": [
+            75.66725000000001,
+            75.150875,
+            70.766833,
+            73.409959,
+            76.856041,
+            69.60933299999999,
+            68.41333300000001,
+            68.036,
+            68.312208,
+            67.943792
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 69.341834,
+            "2": 68.49925
+          }
+        },
+        "measured": {
+          "measured_process_maxima_ms": [
+            82.726292,
+            81.646625,
+            31.530915999999998,
+            32.574208,
+            37.747083,
+            31.293124999999996,
+            28.525958,
+            28.368417,
+            28.38875,
+            28.480874999999997
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 31.14575,
+            "2": 30.724583
+          }
+        },
+        "warmup": {
+          "measured_process_maxima_ms": [
+            32.146625,
+            39.871375,
+            29.908082999999998,
+            36.047166,
+            32.271292,
+            29.103333,
+            28.3765,
+            28.397583,
+            28.550959000000002,
+            28.781417
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 28.859292,
+            "2": 28.390083999999998
+          }
+        }
+      },
+      "whole_trace_priming_max_ms_by_pass": {
+        "1": 69.341834,
+        "2": 68.49925
+      }
+    },
+    "direct/129/pr343": {
+      "first_frame_ms_by_priming_pass": {
+        "1": 70.295125,
+        "2": 69.73879199999999
+      },
+      "measured_first_frames_ms": [
+        77.915292,
+        71.31991599999999,
+        70.022375,
+        73.991708,
+        68.33887499999999,
+        67.978916,
+        68.055,
+        68.31562500000001,
+        68.00087500000001,
+        66.342416
+      ],
+      "phase_peaks": {
+        "cold": {
+          "measured_process_maxima_ms": [
+            77.915292,
+            71.31991599999999,
+            70.022375,
+            73.991708,
+            68.33887499999999,
+            67.978916,
+            68.055,
+            68.31562500000001,
+            68.00087500000001,
+            66.342416
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 70.295125,
+            "2": 69.73879199999999
+          }
+        },
+        "measured": {
+          "measured_process_maxima_ms": [
+            74.41191599999999,
+            122.33025,
+            62.353375,
+            59.731666000000004,
+            60.608333,
+            55.129375,
+            54.766291,
+            54.253750000000004,
+            54.517541,
+            53.77825
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 56.363249999999994,
+            "2": 57.340165999999996
+          }
+        },
+        "warmup": {
+          "measured_process_maxima_ms": [
+            59.304791,
+            57.779875000000004,
+            55.627833,
+            57.292083,
+            55.913625,
+            54.7825,
+            54.970209,
+            54.129791,
+            53.886458999999995,
+            54.663416
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 56.756083,
+            "2": 54.627083
+          }
+        }
+      },
+      "whole_trace_priming_max_ms_by_pass": {
+        "1": 70.295125,
+        "2": 69.73879199999999
+      }
+    },
+    "direct/129/strict-lru128": {
+      "first_frame_ms_by_priming_pass": {
+        "1": 68.469875,
+        "2": 68.386125
+      },
+      "measured_first_frames_ms": [
+        70.168833,
+        84.536209,
+        72.898459,
+        76.560958,
+        68.955375,
+        69.222667,
+        68.32425,
+        68.039958,
+        67.745459,
+        69.95729200000001
+      ],
+      "phase_peaks": {
+        "cold": {
+          "measured_process_maxima_ms": [
+            70.168833,
+            84.536209,
+            72.898459,
+            76.560958,
+            68.955375,
+            69.222667,
+            68.32425,
+            68.039958,
+            67.745459,
+            69.95729200000001
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 68.469875,
+            "2": 68.386125
+          }
+        },
+        "measured": {
+          "measured_process_maxima_ms": [
+            60.054375,
+            122.322208,
+            61.155709,
+            136.808917,
+            58.118417,
+            63.063834,
+            55.771750000000004,
+            54.584333,
+            54.245959000000006,
+            54.129749999999994
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 75.261292,
+            "2": 57.840416999999995
+          }
+        },
+        "warmup": {
+          "measured_process_maxima_ms": [
+            57.203917,
+            70.20658300000001,
+            57.10725,
+            68.606791,
+            56.237333,
+            56.817958000000004,
+            55.356500000000004,
+            55.439625,
+            55.544375,
+            54.139708
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 57.3155,
+            "2": 54.83625
+          }
+        }
+      },
+      "whole_trace_priming_max_ms_by_pass": {
+        "1": 75.261292,
+        "2": 68.386125
+      }
+    },
+    "direct/129/upstream": {
+      "first_frame_ms_by_priming_pass": {
+        "1": 73.952709,
+        "2": 69.549375
+      },
+      "measured_first_frames_ms": [
+        75.109,
+        94.09091699999999,
+        70.83770799999999,
+        91.457666,
+        70.541708,
+        74.38558300000001,
+        69.490625,
+        69.259583,
+        67.800417,
+        66.981042
+      ],
+      "phase_peaks": {
+        "cold": {
+          "measured_process_maxima_ms": [
+            75.109,
+            94.09091699999999,
+            70.83770799999999,
+            91.457666,
+            70.541708,
+            74.38558300000001,
+            69.490625,
+            69.259583,
+            67.800417,
+            66.981042
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 73.952709,
+            "2": 69.549375
+          }
+        },
+        "measured": {
+          "measured_process_maxima_ms": [
+            132.751792,
+            117.787083,
+            79.638,
+            63.90425,
+            57.878666,
+            59.101124999999996,
+            54.833082999999995,
+            54.83625,
+            54.629584,
+            54.586792
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 58.032167,
+            "2": 59.386541
+          }
+        },
+        "warmup": {
+          "measured_process_maxima_ms": [
+            57.975209,
+            78.354417,
+            56.9065,
+            84.089459,
+            59.313207999999996,
+            56.654500000000006,
+            56.060792,
+            55.234375,
+            54.225792,
+            54.590166
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 59.093624999999996,
+            "2": 55.457459
+          }
+        }
+      },
+      "whole_trace_priming_max_ms_by_pass": {
+        "1": 73.952709,
+        "2": 69.549375
+      }
+    },
+    "direct/63/flush-lru64": {
+      "first_frame_ms_by_priming_pass": {
+        "1": 48.068916,
+        "2": 38.709624999999996
+      },
+      "measured_first_frames_ms": [
+        42.660791,
+        51.700167,
+        44.000416,
+        40.787749999999996,
+        38.470416,
+        38.134750000000004,
+        38.228458,
+        38.931542,
+        37.352834,
+        37.084458
+      ],
+      "phase_peaks": {
+        "cold": {
+          "measured_process_maxima_ms": [
+            42.660791,
+            51.700167,
+            44.000416,
+            40.787749999999996,
+            38.470416,
+            38.134750000000004,
+            38.228458,
+            38.931542,
+            37.352834,
+            37.084458
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 48.068916,
+            "2": 38.709624999999996
+          }
+        },
+        "measured": {
+          "measured_process_maxima_ms": [
+            1.474709,
+            6.788583,
+            2.7902500000000003,
+            1.373083,
+            1.3674169999999999,
+            1.798333,
+            0.7779170000000001,
+            1.290583,
+            1.549375,
+            1.356875
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 1.389209,
+            "2": 0.749
+          }
+        },
+        "warmup": {
+          "measured_process_maxima_ms": [
+            1.029708,
+            1.500333,
+            1.4618339999999999,
+            1.005125,
+            0.761875,
+            0.99475,
+            1.4493749999999999,
+            0.693167,
+            0.931792,
+            0.660875
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 0.9832090000000001,
+            "2": 1.0955
+          }
+        }
+      },
+      "whole_trace_priming_max_ms_by_pass": {
+        "1": 48.068916,
+        "2": 38.709624999999996
+      }
+    },
+    "direct/63/pr343": {
+      "first_frame_ms_by_priming_pass": {
+        "1": 46.524,
+        "2": 37.817333000000005
+      },
+      "measured_first_frames_ms": [
+        44.341541,
+        47.222916,
+        42.946208,
+        39.78525,
+        38.497666,
+        37.983042000000005,
+        39.162167,
+        38.832125000000005,
+        37.394583000000004,
+        38.828250000000004
+      ],
+      "phase_peaks": {
+        "cold": {
+          "measured_process_maxima_ms": [
+            44.341541,
+            47.222916,
+            42.946208,
+            39.78525,
+            38.497666,
+            37.983042000000005,
+            39.162167,
+            38.832125000000005,
+            37.394583000000004,
+            38.828250000000004
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 46.524,
+            "2": 37.817333000000005
+          }
+        },
+        "measured": {
+          "measured_process_maxima_ms": [
+            1.9558750000000003,
+            4.4597500000000005,
+            1.4650830000000001,
+            1.912375,
+            1.2802499999999999,
+            1.289959,
+            0.966917,
+            0.896667,
+            1.391958,
+            1.2561250000000002
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 1.194791,
+            "2": 0.868958
+          }
+        },
+        "warmup": {
+          "measured_process_maxima_ms": [
+            1.158334,
+            1.631291,
+            0.918667,
+            0.7206250000000001,
+            0.949792,
+            0.975458,
+            1.459875,
+            0.896208,
+            1.056333,
+            0.679833
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 0.967625,
+            "2": 1.253834
+          }
+        }
+      },
+      "whole_trace_priming_max_ms_by_pass": {
+        "1": 46.524,
+        "2": 37.817333000000005
+      }
+    },
+    "direct/63/strict-lru128": {
+      "first_frame_ms_by_priming_pass": {
+        "1": 49.733624999999996,
+        "2": 38.832625
+      },
+      "measured_first_frames_ms": [
+        42.622458,
+        53.547083,
+        49.344291999999996,
+        41.673666999999995,
+        42.294209,
+        38.366667,
+        39.011209,
+        37.821792,
+        37.511666,
+        38.131708
+      ],
+      "phase_peaks": {
+        "cold": {
+          "measured_process_maxima_ms": [
+            42.622458,
+            53.547083,
+            49.344291999999996,
+            41.673666999999995,
+            42.294209,
+            38.366667,
+            39.011209,
+            37.821792,
+            37.511666,
+            38.131708
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 49.733624999999996,
+            "2": 38.832625
+          }
+        },
+        "measured": {
+          "measured_process_maxima_ms": [
+            1.3519999999999999,
+            4.271083999999999,
+            1.637666,
+            1.451625,
+            1.5172919999999999,
+            0.788583,
+            0.9970420000000001,
+            1.230292,
+            1.410833,
+            1.407875
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 1.500333,
+            "2": 0.898959
+          }
+        },
+        "warmup": {
+          "measured_process_maxima_ms": [
+            0.6279589999999999,
+            1.747333,
+            1.4049589999999998,
+            0.7518750000000001,
+            0.879417,
+            0.53825,
+            1.50525,
+            0.9979159999999999,
+            0.734542,
+            1.0178749999999999
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 0.9945830000000001,
+            "2": 0.6987500000000001
+          }
+        }
+      },
+      "whole_trace_priming_max_ms_by_pass": {
+        "1": 49.733624999999996,
+        "2": 38.832625
+      }
+    },
+    "direct/63/upstream": {
+      "first_frame_ms_by_priming_pass": {
+        "1": 181.05533300000002,
+        "2": 40.846208000000004
+      },
+      "measured_first_frames_ms": [
+        40.031833000000006,
+        57.521207999999994,
+        45.288792,
+        43.236542,
+        38.275166999999996,
+        38.778208,
+        38.063083999999996,
+        38.511790999999995,
+        37.413000000000004,
+        37.850625
+      ],
+      "phase_peaks": {
+        "cold": {
+          "measured_process_maxima_ms": [
+            40.031833000000006,
+            57.521207999999994,
+            45.288792,
+            43.236542,
+            38.275166999999996,
+            38.778208,
+            38.063083999999996,
+            38.511790999999995,
+            37.413000000000004,
+            37.850625
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 181.05533300000002,
+            "2": 40.846208000000004
+          }
+        },
+        "measured": {
+          "measured_process_maxima_ms": [
+            66.097167,
+            72.851417,
+            44.246792,
+            30.280749999999998,
+            28.381792,
+            32.034625,
+            31.571707999999997,
+            26.998749999999998,
+            26.953333,
+            27.068708
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 28.323542,
+            "2": 31.785375
+          }
+        },
+        "warmup": {
+          "measured_process_maxima_ms": [
+            28.260707999999997,
+            37.628125,
+            36.961334,
+            29.134208,
+            29.218541000000002,
+            28.647709,
+            27.175667,
+            26.859,
+            27.409125,
+            27.139583
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 27.783667,
+            "2": 28.410958
+          }
+        }
+      },
+      "whole_trace_priming_max_ms_by_pass": {
+        "1": 181.05533300000002,
+        "2": 40.846208000000004
+      }
+    },
+    "direct/64/flush-lru64": {
+      "first_frame_ms_by_priming_pass": {
+        "1": 41.69225,
+        "2": 39.90925
+      },
+      "measured_first_frames_ms": [
+        55.668,
+        45.634750000000004,
+        43.280333,
+        40.909792,
+        39.452666,
+        38.56775,
+        38.617166000000005,
+        38.371833,
+        40.465792,
+        38.373833000000005
+      ],
+      "phase_peaks": {
+        "cold": {
+          "measured_process_maxima_ms": [
+            55.668,
+            45.634750000000004,
+            43.280333,
+            40.909792,
+            39.452666,
+            38.56775,
+            38.617166000000005,
+            38.371833,
+            40.465792,
+            38.373833000000005
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 41.69225,
+            "2": 39.90925
+          }
+        },
+        "measured": {
+          "measured_process_maxima_ms": [
+            16.987790999999998,
+            1.6587500000000002,
+            1.3957920000000001,
+            1.52875,
+            1.514791,
+            1.4301249999999999,
+            0.9847079999999999,
+            1.445166,
+            1.297666,
+            1.588625
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 1.446542,
+            "2": 1.323125
+          }
+        },
+        "warmup": {
+          "measured_process_maxima_ms": [
+            22.981125000000002,
+            1.195708,
+            0.84525,
+            1.337334,
+            1.0645,
+            0.970333,
+            1.407458,
+            0.927167,
+            0.7354160000000001,
+            0.66025
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 0.777416,
+            "2": 0.7655
+          }
+        }
+      },
+      "whole_trace_priming_max_ms_by_pass": {
+        "1": 41.69225,
+        "2": 39.90925
+      }
+    },
+    "direct/64/pr343": {
+      "first_frame_ms_by_priming_pass": {
+        "1": 39.323457999999995,
+        "2": 38.975875
+      },
+      "measured_first_frames_ms": [
+        43.886084,
+        46.778833999999996,
+        43.618917,
+        40.373292,
+        39.122333000000005,
+        38.488959,
+        39.226084,
+        38.196917,
+        40.823917,
+        38.08875
+      ],
+      "phase_peaks": {
+        "cold": {
+          "measured_process_maxima_ms": [
+            43.886084,
+            46.778833999999996,
+            43.618917,
+            40.373292,
+            39.122333000000005,
+            38.488959,
+            39.226084,
+            38.196917,
+            40.823917,
+            38.08875
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 39.323457999999995,
+            "2": 38.975875
+          }
+        },
+        "measured": {
+          "measured_process_maxima_ms": [
+            11.221125,
+            1.656916,
+            1.591292,
+            1.421875,
+            1.4018329999999999,
+            0.842625,
+            1.335375,
+            1.262833,
+            0.936083,
+            1.338333
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 1.316375,
+            "2": 1.365417
+          }
+        },
+        "warmup": {
+          "measured_process_maxima_ms": [
+            1.732208,
+            1.0147089999999999,
+            0.8107080000000001,
+            0.919834,
+            0.74925,
+            1.5820420000000002,
+            0.899083,
+            0.701208,
+            0.9418340000000001,
+            1.0142499999999999
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 0.7135410000000001,
+            "2": 1.030042
+          }
+        }
+      },
+      "whole_trace_priming_max_ms_by_pass": {
+        "1": 39.323457999999995,
+        "2": 38.975875
+      }
+    },
+    "direct/64/strict-lru128": {
+      "first_frame_ms_by_priming_pass": {
+        "1": 39.899875,
+        "2": 39.114583
+      },
+      "measured_first_frames_ms": [
+        46.66525,
+        41.882957999999995,
+        42.828416000000004,
+        40.616917,
+        39.6945,
+        38.545500000000004,
+        39.545667,
+        38.312,
+        40.956708,
+        37.390375000000006
+      ],
+      "phase_peaks": {
+        "cold": {
+          "measured_process_maxima_ms": [
+            46.66525,
+            41.882957999999995,
+            42.828416000000004,
+            40.616917,
+            39.6945,
+            38.545500000000004,
+            39.545667,
+            38.312,
+            40.956708,
+            37.390375000000006
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 39.899875,
+            "2": 39.114583
+          }
+        },
+        "measured": {
+          "measured_process_maxima_ms": [
+            1.504625,
+            1.253041,
+            0.889625,
+            1.285125,
+            1.30925,
+            0.9768330000000001,
+            1.6259160000000001,
+            1.2138330000000002,
+            1.263625,
+            1.636209
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 1.608875,
+            "2": 1.29075
+          }
+        },
+        "warmup": {
+          "measured_process_maxima_ms": [
+            1.240667,
+            1.048708,
+            0.604333,
+            1.8417080000000001,
+            0.713959,
+            1.4965410000000001,
+            0.736333,
+            1.132708,
+            1.5527920000000002,
+            0.9957500000000001
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 0.7587079999999999,
+            "2": 0.782417
+          }
+        }
+      },
+      "whole_trace_priming_max_ms_by_pass": {
+        "1": 39.899875,
+        "2": 39.114583
+      }
+    },
+    "direct/64/upstream": {
+      "first_frame_ms_by_priming_pass": {
+        "1": 39.8375,
+        "2": 39.244875
+      },
+      "measured_first_frames_ms": [
+        44.1695,
+        46.804792,
+        42.828583,
+        43.117957999999994,
+        38.887958,
+        38.975708,
+        38.913416999999995,
+        38.138667,
+        37.797625000000004,
+        38.001833
+      ],
+      "phase_peaks": {
+        "cold": {
+          "measured_process_maxima_ms": [
+            44.1695,
+            46.804792,
+            42.828583,
+            43.117957999999994,
+            38.887958,
+            38.975708,
+            38.913416999999995,
+            38.138667,
+            37.797625000000004,
+            38.001833
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 39.8375,
+            "2": 39.244875
+          }
+        },
+        "measured": {
+          "measured_process_maxima_ms": [
+            56.724792,
+            65.83066699999999,
+            31.210333,
+            30.969917,
+            29.401875,
+            30.953375,
+            28.245458,
+            27.773875,
+            28.101582999999998,
+            27.610042
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 29.905250000000002,
+            "2": 28.991042
+          }
+        },
+        "warmup": {
+          "measured_process_maxima_ms": [
+            30.561666000000002,
+            35.912791999999996,
+            31.169209,
+            29.103458,
+            28.790083000000003,
+            28.413083,
+            27.765625,
+            27.968333,
+            27.438625000000002,
+            27.189542
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 28.287583,
+            "2": 28.063000000000002
+          }
+        }
+      },
+      "whole_trace_priming_max_ms_by_pass": {
+        "1": 39.8375,
+        "2": 39.244875
+      }
+    },
+    "direct/65/flush-lru64": {
+      "first_frame_ms_by_priming_pass": {
+        "1": 38.961667,
+        "2": 39.944874999999996
+      },
+      "measured_first_frames_ms": [
+        40.557041000000005,
+        40.753834000000005,
+        47.486541,
+        40.024833,
+        40.435875,
+        40.839124999999996,
+        40.349875,
+        38.734958999999996,
+        38.195791,
+        37.810791
+      ],
+      "phase_peaks": {
+        "cold": {
+          "measured_process_maxima_ms": [
+            40.557041000000005,
+            40.753834000000005,
+            47.486541,
+            40.024833,
+            40.435875,
+            40.839124999999996,
+            40.349875,
+            38.734958999999996,
+            38.195791,
+            37.810791
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 38.961667,
+            "2": 39.944874999999996
+          }
+        },
+        "measured": {
+          "measured_process_maxima_ms": [
+            2.468042,
+            2.155875,
+            13.736792,
+            2.0409170000000003,
+            2.151917,
+            2.962208,
+            1.6775,
+            1.8684999999999998,
+            1.7921250000000002,
+            1.750167
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 2.107834,
+            "2": 1.9840830000000003
+          }
+        },
+        "warmup": {
+          "measured_process_maxima_ms": [
+            1.547083,
+            1.6153330000000001,
+            5.08125,
+            1.568834,
+            1.67175,
+            1.571375,
+            1.419959,
+            1.461,
+            1.473958,
+            1.521625
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 1.5946669999999998,
+            "2": 1.5578750000000001
+          }
+        }
+      },
+      "whole_trace_priming_max_ms_by_pass": {
+        "1": 38.961667,
+        "2": 39.944874999999996
+      }
+    },
+    "direct/65/pr343": {
+      "first_frame_ms_by_priming_pass": {
+        "1": 38.891166999999996,
+        "2": 39.507667000000005
+      },
+      "measured_first_frames_ms": [
+        41.028833,
+        44.722041999999995,
+        51.347792000000005,
+        40.832541,
+        39.145084,
+        39.211625,
+        38.813334,
+        39.147208000000006,
+        39.271333,
+        38.215917000000005
+      ],
+      "phase_peaks": {
+        "cold": {
+          "measured_process_maxima_ms": [
+            41.028833,
+            44.722041999999995,
+            51.347792000000005,
+            40.832541,
+            39.145084,
+            39.211625,
+            38.813334,
+            39.147208000000006,
+            39.271333,
+            38.215917000000005
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 38.891166999999996,
+            "2": 39.507667000000005
+          }
+        },
+        "measured": {
+          "measured_process_maxima_ms": [
+            31.242666999999997,
+            32.411708,
+            89.708042,
+            31.689500000000002,
+            30.1415,
+            29.133125,
+            28.293084,
+            28.873625,
+            27.305415999999997,
+            27.042375
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 30.578,
+            "2": 30.579083
+          }
+        },
+        "warmup": {
+          "measured_process_maxima_ms": [
+            29.256,
+            30.599958,
+            38.879834,
+            28.566000000000003,
+            28.121707999999998,
+            28.138125,
+            28.177667,
+            27.515792,
+            27.264291,
+            27.510625
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 28.785708,
+            "2": 28.618541
+          }
+        }
+      },
+      "whole_trace_priming_max_ms_by_pass": {
+        "1": 38.891166999999996,
+        "2": 39.507667000000005
+      }
+    },
+    "direct/65/strict-lru128": {
+      "first_frame_ms_by_priming_pass": {
+        "1": 38.661291,
+        "2": 39.377625
+      },
+      "measured_first_frames_ms": [
+        40.015958,
+        41.274375,
+        46.92,
+        42.134,
+        39.249834,
+        39.309916,
+        39.674959,
+        38.587,
+        38.651708,
+        38.97025
+      ],
+      "phase_peaks": {
+        "cold": {
+          "measured_process_maxima_ms": [
+            40.015958,
+            41.274375,
+            46.92,
+            42.134,
+            39.249834,
+            39.309916,
+            39.674959,
+            38.587,
+            38.651708,
+            38.97025
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 38.661291,
+            "2": 39.377625
+          }
+        },
+        "measured": {
+          "measured_process_maxima_ms": [
+            1.454208,
+            1.495375,
+            8.584875,
+            1.40825,
+            1.380333,
+            0.761166,
+            0.907834,
+            1.2691670000000002,
+            1.43125,
+            0.959125
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 1.575833,
+            "2": 0.749875
+          }
+        },
+        "warmup": {
+          "measured_process_maxima_ms": [
+            0.9151250000000001,
+            0.757084,
+            2.115291,
+            0.936208,
+            0.725708,
+            0.6366670000000001,
+            1.229625,
+            0.9636669999999999,
+            0.997333,
+            1.7512910000000002
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 0.753875,
+            "2": 0.9918329999999999
+          }
+        }
+      },
+      "whole_trace_priming_max_ms_by_pass": {
+        "1": 38.661291,
+        "2": 39.377625
+      }
+    },
+    "direct/65/upstream": {
+      "first_frame_ms_by_priming_pass": {
+        "1": 40.064542,
+        "2": 40.015042
+      },
+      "measured_first_frames_ms": [
+        67.293791,
+        41.640208,
+        54.569916000000006,
+        40.671791,
+        39.004167,
+        39.358708,
+        39.452667,
+        38.709125,
+        38.669542,
+        38.485040999999995
+      ],
+      "phase_peaks": {
+        "cold": {
+          "measured_process_maxima_ms": [
+            67.293791,
+            41.640208,
+            54.569916000000006,
+            40.671791,
+            39.004167,
+            39.358708,
+            39.452667,
+            38.709125,
+            38.669542,
+            38.485040999999995
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 40.064542,
+            "2": 40.015042
+          }
+        },
+        "measured": {
+          "measured_process_maxima_ms": [
+            63.837540999999995,
+            30.463625,
+            102.58437500000001,
+            32.267959,
+            30.873,
+            30.456667,
+            28.174333,
+            27.641917,
+            28.029084,
+            28.321875
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 30.179375,
+            "2": 29.999042
+          }
+        },
+        "warmup": {
+          "measured_process_maxima_ms": [
+            35.855791999999994,
+            31.798667000000002,
+            44.979084,
+            30.104667000000003,
+            28.109334,
+            28.576959,
+            28.748417,
+            28.179042000000003,
+            27.81775,
+            27.720333999999998
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 33.446958,
+            "2": 28.247208
+          }
+        }
+      },
+      "whole_trace_priming_max_ms_by_pass": {
+        "1": 40.064542,
+        "2": 40.015042
+      }
+    },
+    "direct/80/flush-lru64": {
+      "first_frame_ms_by_priming_pass": {
+        "1": 50.552375,
+        "2": 45.771291999999995
+      },
+      "measured_first_frames_ms": [
+        48.22825,
+        47.395832999999996,
+        53.945666,
+        53.933292,
+        46.701333999999996,
+        46.473625,
+        45.328917000000004,
+        46.13775,
+        45.398624999999996,
+        46.548083
+      ],
+      "phase_peaks": {
+        "cold": {
+          "measured_process_maxima_ms": [
+            48.22825,
+            47.395832999999996,
+            53.945666,
+            53.933292,
+            46.701333999999996,
+            46.473625,
+            45.328917000000004,
+            46.13775,
+            45.398624999999996,
+            46.548083
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 50.552375,
+            "2": 45.771291999999995
+          }
+        },
+        "measured": {
+          "measured_process_maxima_ms": [
+            8.768167,
+            10.500875,
+            23.324708,
+            12.10825,
+            8.526583,
+            8.873208,
+            8.140875000000001,
+            7.916875,
+            8.534833,
+            8.340542
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 8.85075,
+            "2": 8.0705
+          }
+        },
+        "warmup": {
+          "measured_process_maxima_ms": [
+            7.967040999999999,
+            8.584167,
+            16.5105,
+            10.293125,
+            8.176833,
+            8.222666,
+            7.541625,
+            7.968249999999999,
+            8.052375000000001,
+            7.748042
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 9.76925,
+            "2": 7.796959
+          }
+        }
+      },
+      "whole_trace_priming_max_ms_by_pass": {
+        "1": 50.552375,
+        "2": 45.771291999999995
+      }
+    },
+    "direct/80/pr343": {
+      "first_frame_ms_by_priming_pass": {
+        "1": 45.570333,
+        "2": 48.498125
+      },
+      "measured_first_frames_ms": [
+        54.661083,
+        47.306292,
+        50.864292,
+        53.630875,
+        46.189833,
+        46.827124999999995,
+        45.844457999999996,
+        45.254833,
+        45.327791999999995,
+        47.347083
+      ],
+      "phase_peaks": {
+        "cold": {
+          "measured_process_maxima_ms": [
+            54.661083,
+            47.306292,
+            50.864292,
+            53.630875,
+            46.189833,
+            46.827124999999995,
+            45.844457999999996,
+            45.254833,
+            45.327791999999995,
+            47.347083
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 45.570333,
+            "2": 48.498125
+          }
+        },
+        "measured": {
+          "measured_process_maxima_ms": [
+            59.560083,
+            41.189625,
+            38.959125,
+            71.35912499999999,
+            35.810458000000004,
+            36.892333,
+            33.844791,
+            34.2485,
+            34.265249999999995,
+            33.660583
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 40.676249999999996,
+            "2": 41.136542
+          }
+        },
+        "warmup": {
+          "measured_process_maxima_ms": [
+            42.575208,
+            35.80625,
+            39.402791,
+            38.553583,
+            34.615667,
+            34.165665999999995,
+            34.554874999999996,
+            34.06375,
+            34.532624999999996,
+            34.787667
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 36.273374999999994,
+            "2": 35.156958
+          }
+        }
+      },
+      "whole_trace_priming_max_ms_by_pass": {
+        "1": 45.570333,
+        "2": 48.498125
+      }
+    },
+    "direct/80/strict-lru128": {
+      "first_frame_ms_by_priming_pass": {
+        "1": 47.380209,
+        "2": 47.165791999999996
+      },
+      "measured_first_frames_ms": [
+        47.000833,
+        48.535083,
+        53.245209,
+        52.090166,
+        47.593042000000004,
+        47.355957999999994,
+        46.688083999999996,
+        45.662458,
+        45.592084,
+        45.100500000000004
+      ],
+      "phase_peaks": {
+        "cold": {
+          "measured_process_maxima_ms": [
+            47.000833,
+            48.535083,
+            53.245209,
+            52.090166,
+            47.593042000000004,
+            47.355957999999994,
+            46.688083999999996,
+            45.662458,
+            45.592084,
+            45.100500000000004
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 47.380209,
+            "2": 47.165791999999996
+          }
+        },
+        "measured": {
+          "measured_process_maxima_ms": [
+            1.507958,
+            1.377709,
+            1.885542,
+            1.324959,
+            0.7822079999999999,
+            0.909125,
+            1.4205839999999998,
+            1.5692499999999998,
+            1.000291,
+            1.6339169999999998
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 1.448583,
+            "2": 1.255833
+          }
+        },
+        "warmup": {
+          "measured_process_maxima_ms": [
+            1.404166,
+            1.8699999999999999,
+            1.017167,
+            1.05125,
+            0.789458,
+            1.0752089999999999,
+            0.908875,
+            1.067375,
+            1.161,
+            1.166667
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 1.057791,
+            "2": 1.119209
+          }
+        }
+      },
+      "whole_trace_priming_max_ms_by_pass": {
+        "1": 47.380209,
+        "2": 47.165791999999996
+      }
+    },
+    "direct/80/upstream": {
+      "first_frame_ms_by_priming_pass": {
+        "1": 47.075292,
+        "2": 46.271375
+      },
+      "measured_first_frames_ms": [
+        48.219208,
+        49.480416,
+        47.838459,
+        51.391292,
+        48.292916,
+        46.610749999999996,
+        46.07425,
+        46.981666,
+        45.623459,
+        45.535167
+      ],
+      "phase_peaks": {
+        "cold": {
+          "measured_process_maxima_ms": [
+            48.219208,
+            49.480416,
+            47.838459,
+            51.391292,
+            48.292916,
+            46.610749999999996,
+            46.07425,
+            46.981666,
+            45.623459,
+            45.535167
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 47.075292,
+            "2": 46.271375
+          }
+        },
+        "measured": {
+          "measured_process_maxima_ms": [
+            63.678417,
+            37.763125,
+            39.708208,
+            54.345959,
+            36.832083000000004,
+            36.757375,
+            34.341292,
+            34.167292,
+            34.344167,
+            34.000833
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 36.531959,
+            "2": 50.246666000000005
+          }
+        },
+        "warmup": {
+          "measured_process_maxima_ms": [
+            35.549417,
+            36.694333,
+            37.057291,
+            41.54575,
+            36.989374999999995,
+            34.946333,
+            34.756334,
+            34.18425,
+            34.320499999999996,
+            34.469167
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 34.698917,
+            "2": 35.084958
+          }
+        }
+      },
+      "whole_trace_priming_max_ms_by_pass": {
+        "1": 47.075292,
+        "2": 50.246666000000005
+      }
+    },
+    "direct/mixed/flush-lru64": {
+      "first_frame_ms_by_priming_pass": {
+        "1": 15.225042,
+        "2": 14.810875
+      },
+      "measured_first_frames_ms": [
+        16.359665999999997,
+        18.648125,
+        18.293541,
+        14.755249999999998,
+        15.2125,
+        14.533042,
+        15.818791,
+        14.291125,
+        14.119625000000001,
+        14.104916000000001
+      ],
+      "phase_peaks": {
+        "cold": {
+          "measured_process_maxima_ms": [
+            16.359665999999997,
+            18.648125,
+            18.293541,
+            14.755249999999998,
+            15.2125,
+            14.533042,
+            15.818791,
+            14.291125,
+            14.119625000000001,
+            14.104916000000001
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 15.225042,
+            "2": 14.810875
+          }
+        },
+        "measured": {
+          "measured_process_maxima_ms": [
+            10.71875,
+            5.315167,
+            2.007333,
+            1.9606670000000002,
+            1.9007500000000002,
+            2.64675,
+            1.670333,
+            1.776667,
+            1.093625,
+            1.747209
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 5.299375,
+            "2": 1.781333
+          }
+        },
+        "warmup": {
+          "measured_process_maxima_ms": [
+            1.0915,
+            3.26125,
+            1.632917,
+            1.766791,
+            1.187084,
+            1.114041,
+            1.300959,
+            0.9698330000000001,
+            0.891083,
+            1.001125
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 1.8097079999999999,
+            "2": 0.901667
+          }
+        }
+      },
+      "whole_trace_priming_max_ms_by_pass": {
+        "1": 15.225042,
+        "2": 14.810875
+      }
+    },
+    "direct/mixed/pr343": {
+      "first_frame_ms_by_priming_pass": {
+        "1": 14.512875,
+        "2": 14.535
+      },
+      "measured_first_frames_ms": [
+        14.99175,
+        35.740542,
+        20.023542,
+        15.000416000000001,
+        14.459,
+        14.835374999999999,
+        13.826625,
+        13.879375,
+        14.874083,
+        14.066708
+      ],
+      "phase_peaks": {
+        "cold": {
+          "measured_process_maxima_ms": [
+            14.99175,
+            35.740542,
+            20.023542,
+            15.000416000000001,
+            14.459,
+            14.835374999999999,
+            13.826625,
+            13.879375,
+            14.874083,
+            14.066708
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 14.512875,
+            "2": 14.535
+          }
+        },
+        "measured": {
+          "measured_process_maxima_ms": [
+            1.617875,
+            7.283542,
+            2.943709,
+            1.829334,
+            1.776375,
+            0.9910419999999999,
+            1.737375,
+            1.868541,
+            1.65525,
+            2.046166
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 2.2829170000000003,
+            "2": 1.6550420000000001
+          }
+        },
+        "warmup": {
+          "measured_process_maxima_ms": [
+            2.147333,
+            10.181625,
+            2.524208,
+            0.894959,
+            0.9413750000000001,
+            0.782417,
+            1.174542,
+            1.079792,
+            1.440333,
+            1.149417
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 1.169292,
+            "2": 1.122375
+          }
+        }
+      },
+      "whole_trace_priming_max_ms_by_pass": {
+        "1": 14.512875,
+        "2": 14.535
+      }
+    },
+    "direct/mixed/strict-lru128": {
+      "first_frame_ms_by_priming_pass": {
+        "1": 16.868667000000002,
+        "2": 14.64375
+      },
+      "measured_first_frames_ms": [
+        15.791416,
+        34.709375,
+        17.980415999999998,
+        15.463208000000002,
+        14.410791,
+        14.712041000000001,
+        14.052999999999999,
+        13.812666,
+        14.353875,
+        13.900417
+      ],
+      "phase_peaks": {
+        "cold": {
+          "measured_process_maxima_ms": [
+            15.791416,
+            34.709375,
+            17.980415999999998,
+            15.463208000000002,
+            14.410791,
+            14.712041000000001,
+            14.052999999999999,
+            13.812666,
+            14.353875,
+            13.900417
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 16.868667000000002,
+            "2": 14.64375
+          }
+        },
+        "measured": {
+          "measured_process_maxima_ms": [
+            1.713375,
+            5.803042,
+            2.13875,
+            1.9418339999999998,
+            1.6820419999999998,
+            1.958125,
+            1.338042,
+            1.729125,
+            1.7650000000000001,
+            1.693792
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 1.8652499999999999,
+            "2": 1.616083
+          }
+        },
+        "warmup": {
+          "measured_process_maxima_ms": [
+            1.011125,
+            3.347167,
+            1.057334,
+            1.1830829999999999,
+            1.02325,
+            1.342792,
+            0.929334,
+            1.0954579999999998,
+            0.8150419999999999,
+            1.14475
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 1.902084,
+            "2": 0.903625
+          }
+        }
+      },
+      "whole_trace_priming_max_ms_by_pass": {
+        "1": 16.868667000000002,
+        "2": 14.64375
+      }
+    },
+    "direct/mixed/upstream": {
+      "first_frame_ms_by_priming_pass": {
+        "1": 42.969417,
+        "2": 14.690667
+      },
+      "measured_first_frames_ms": [
+        16.340334000000002,
+        24.400583,
+        21.971208,
+        16.319582999999998,
+        14.417,
+        14.241,
+        14.154083,
+        14.390208,
+        13.980958999999999,
+        13.834624999999999
+      ],
+      "phase_peaks": {
+        "cold": {
+          "measured_process_maxima_ms": [
+            16.340334000000002,
+            24.400583,
+            21.971208,
+            16.319582999999998,
+            14.417,
+            14.241,
+            14.154083,
+            14.390208,
+            13.980958999999999,
+            13.834624999999999
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 42.969417,
+            "2": 14.690667
+          }
+        },
+        "measured": {
+          "measured_process_maxima_ms": [
+            13.32475,
+            42.096792,
+            25.256209000000002,
+            15.261834,
+            11.690417,
+            11.625041,
+            11.664708,
+            11.084667,
+            11.024584,
+            11.549375000000001
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 13.485667,
+            "2": 11.518834
+          }
+        },
+        "warmup": {
+          "measured_process_maxima_ms": [
+            12.678959,
+            27.892209,
+            19.898,
+            13.007292,
+            11.780583,
+            11.828040999999999,
+            11.156667,
+            11.657375,
+            11.852458,
+            11.123375
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 12.228958,
+            "2": 11.504
+          }
+        }
+      },
+      "whole_trace_priming_max_ms_by_pass": {
+        "1": 42.969417,
+        "2": 14.690667
+      }
+    },
+    "policies/batch-single/W64/C64/flush-lru": {
+      "first_frame_ms_by_priming_pass": {
+        "1": 67.561292,
+        "2": 68.13341700000001
+      },
+      "measured_first_frames_ms": [
+        67.827792,
+        66.208875,
+        66.965916,
+        68.25537499999999,
+        66.878375,
+        66.68895900000001,
+        68.649084,
+        65.549709,
+        66.275375,
+        65.9935
+      ],
+      "phase_peaks": {
+        "steady": {
+          "measured_process_maxima_ms": [
+            67.827792,
+            66.208875,
+            66.965916,
+            68.25537499999999,
+            66.878375,
+            66.68895900000001,
+            68.649084,
+            65.549709,
+            66.275375,
+            65.9935
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 67.561292,
+            "2": 68.13341700000001
+          }
+        }
+      },
+      "whole_trace_priming_max_ms_by_pass": {
+        "1": 67.561292,
+        "2": 68.13341700000001
+      }
+    },
+    "policies/batch-single/W64/C64/lru": {
+      "first_frame_ms_by_priming_pass": {
+        "1": 119.668875,
+        "2": 119.426833
+      },
+      "measured_first_frames_ms": [
+        119.347958,
+        121.951667,
+        118.134041,
+        118.50325000000001,
+        118.012167,
+        116.845458,
+        118.337,
+        117.28025000000001,
+        116.488542,
+        117.34845800000001
+      ],
+      "phase_peaks": {
+        "steady": {
+          "measured_process_maxima_ms": [
+            119.347958,
+            121.951667,
+            118.134041,
+            118.50325000000001,
+            118.012167,
+            116.845458,
+            134.01575,
+            117.28025000000001,
+            116.488542,
+            117.34845800000001
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 119.668875,
+            "2": 119.426833
+          }
+        }
+      },
+      "whole_trace_priming_max_ms_by_pass": {
+        "1": 119.668875,
+        "2": 119.426833
+      }
+    },
+    "policies/batch-single/W64/C64/retain": {
+      "first_frame_ms_by_priming_pass": {
+        "1": 68.375375,
+        "2": 67.97125
+      },
+      "measured_first_frames_ms": [
+        68.106792,
+        67.242375,
+        67.619333,
+        65.973708,
+        68.292291,
+        66.600625,
+        67.962041,
+        65.925833,
+        66.02933399999999,
+        65.659833
+      ],
+      "phase_peaks": {
+        "steady": {
+          "measured_process_maxima_ms": [
+            68.106792,
+            67.242375,
+            67.619333,
+            65.973708,
+            68.292291,
+            66.600625,
+            67.962041,
+            65.925833,
+            66.02933399999999,
+            65.659833
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 68.375375,
+            "2": 67.97125
+          }
+        }
+      },
+      "whole_trace_priming_max_ms_by_pass": {
+        "1": 68.375375,
+        "2": 67.97125
+      }
+    },
+    "policies/batch-single/W64/C64/s3fifo": {
+      "first_frame_ms_by_priming_pass": {
+        "1": 121.884958,
+        "2": 120.631917
+      },
+      "measured_first_frames_ms": [
+        119.634,
+        118.285708,
+        119.896917,
+        117.86774999999999,
+        119.318375,
+        116.972833,
+        117.896083,
+        116.556625,
+        120.08408299999999,
+        116.600959
+      ],
+      "phase_peaks": {
+        "steady": {
+          "measured_process_maxima_ms": [
+            119.634,
+            118.285708,
+            119.896917,
+            117.86774999999999,
+            119.318375,
+            116.972833,
+            183.19174999999998,
+            116.556625,
+            120.08408299999999,
+            116.600959
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 121.884958,
+            "2": 120.631917
+          }
+        }
+      },
+      "whole_trace_priming_max_ms_by_pass": {
+        "1": 121.884958,
+        "2": 120.631917
+      }
+    },
+    "policies/batch-split/W64/C64/flush-lru": {
+      "first_frame_ms_by_priming_pass": {
+        "1": 113.20066700000001,
+        "2": 114.50375
+      },
+      "measured_first_frames_ms": [
+        113.241667,
+        111.076125,
+        113.4175,
+        113.30066699999999,
+        112.33025,
+        112.044666,
+        111.141,
+        110.155709,
+        110.660041,
+        110.157584
+      ],
+      "phase_peaks": {
+        "steady": {
+          "measured_process_maxima_ms": [
+            113.241667,
+            111.076125,
+            113.4175,
+            113.30066699999999,
+            112.33025,
+            112.044666,
+            111.141,
+            110.155709,
+            126.95241700000001,
+            115.870208
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 113.20066700000001,
+            "2": 114.50375
+          }
+        }
+      },
+      "whole_trace_priming_max_ms_by_pass": {
+        "1": 113.20066700000001,
+        "2": 114.50375
+      }
+    },
+    "policies/batch-split/W64/C64/lru": {
+      "first_frame_ms_by_priming_pass": {
+        "1": 114.388667,
+        "2": 114.338166
+      },
+      "measured_first_frames_ms": [
+        113.40404199999999,
+        113.330208,
+        111.815,
+        111.844167,
+        112.14616600000001,
+        112.27,
+        110.604584,
+        110.961084,
+        110.261,
+        111.39687500000001
+      ],
+      "phase_peaks": {
+        "steady": {
+          "measured_process_maxima_ms": [
+            113.40404199999999,
+            113.330208,
+            111.815,
+            124.055417,
+            112.14616600000001,
+            112.27,
+            110.604584,
+            110.961084,
+            110.261,
+            111.39687500000001
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 114.388667,
+            "2": 114.338166
+          }
+        }
+      },
+      "whole_trace_priming_max_ms_by_pass": {
+        "1": 114.388667,
+        "2": 114.338166
+      }
+    },
+    "policies/batch-split/W64/C64/retain": {
+      "first_frame_ms_by_priming_pass": {
+        "1": 60.423292000000004,
+        "2": 61.694958
+      },
+      "measured_first_frames_ms": [
+        60.979791999999996,
+        61.648833,
+        60.536417,
+        59.697708,
+        60.976042,
+        59.844875,
+        60.059459000000004,
+        60.732375,
+        59.899665999999996,
+        60.377834
+      ],
+      "phase_peaks": {
+        "steady": {
+          "measured_process_maxima_ms": [
+            60.979791999999996,
+            61.648833,
+            60.536417,
+            59.697708,
+            60.976042,
+            59.844875,
+            60.059459000000004,
+            60.732375,
+            59.899665999999996,
+            60.377834
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 60.423292000000004,
+            "2": 61.694958
+          }
+        }
+      },
+      "whole_trace_priming_max_ms_by_pass": {
+        "1": 60.423292000000004,
+        "2": 61.694958
+      }
+    },
+    "policies/batch-split/W64/C64/s3fifo": {
+      "first_frame_ms_by_priming_pass": {
+        "1": 114.440416,
+        "2": 114.738541
+      },
+      "measured_first_frames_ms": [
+        113.736917,
+        111.125959,
+        111.27716699999999,
+        112.796042,
+        111.050709,
+        111.656334,
+        112.732333,
+        112.42425,
+        111.80925,
+        110.795959
+      ],
+      "phase_peaks": {
+        "steady": {
+          "measured_process_maxima_ms": [
+            113.736917,
+            111.125959,
+            111.27875,
+            114.792,
+            121.601417,
+            111.656334,
+            112.732333,
+            112.42425,
+            111.80925,
+            110.795959
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 114.440416,
+            "2": 114.738541
+          }
+        }
+      },
+      "whole_trace_priming_max_ms_by_pass": {
+        "1": 114.440416,
+        "2": 114.738541
+      }
+    },
+    "policies/cycle-plus/W128/C128/flush-lru": {
+      "first_frame_ms_by_priming_pass": {
+        "1": 66.461375,
+        "2": 67.167
+      },
+      "measured_first_frames_ms": [
+        67.08254199999999,
+        66.935041,
+        67.096791,
+        66.498791,
+        66.681375,
+        65.973542,
+        65.273791,
+        65.4635,
+        65.50175,
+        65.412541
+      ],
+      "phase_peaks": {
+        "steady": {
+          "measured_process_maxima_ms": [
+            67.08254199999999,
+            66.935041,
+            67.096791,
+            66.498791,
+            66.681375,
+            65.973542,
+            65.273791,
+            65.4635,
+            65.50175,
+            65.412541
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 66.461375,
+            "2": 67.167
+          }
+        }
+      },
+      "whole_trace_priming_max_ms_by_pass": {
+        "1": 66.461375,
+        "2": 67.167
+      }
+    },
+    "policies/cycle-plus/W128/C128/lru": {
+      "first_frame_ms_by_priming_pass": {
+        "1": 1902.3474999999999,
+        "2": 67.304292
+      },
+      "measured_first_frames_ms": [
+        66.95237499999999,
+        66.652875,
+        65.858875,
+        65.71737499999999,
+        66.25954200000001,
+        65.884875,
+        66.06774999999999,
+        64.77612500000001,
+        65.26404099999999,
+        65.50075
+      ],
+      "phase_peaks": {
+        "steady": {
+          "measured_process_maxima_ms": [
+            66.95237499999999,
+            66.652875,
+            65.858875,
+            65.71737499999999,
+            66.25954200000001,
+            65.884875,
+            66.06774999999999,
+            64.77612500000001,
+            65.26404099999999,
+            65.50075
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 1902.3474999999999,
+            "2": 67.304292
+          }
+        }
+      },
+      "whole_trace_priming_max_ms_by_pass": {
+        "1": 1902.3474999999999,
+        "2": 67.304292
+      }
+    },
+    "policies/cycle-plus/W128/C128/retain": {
+      "first_frame_ms_by_priming_pass": {
+        "1": 67.085708,
+        "2": 67.1825
+      },
+      "measured_first_frames_ms": [
+        67.002167,
+        66.33645800000001,
+        67.355875,
+        66.114292,
+        67.087333,
+        66.042833,
+        65.838709,
+        66.74595799999999,
+        66.21375,
+        64.913208
+      ],
+      "phase_peaks": {
+        "steady": {
+          "measured_process_maxima_ms": [
+            67.002167,
+            66.33645800000001,
+            67.355875,
+            66.114292,
+            67.087333,
+            66.042833,
+            65.838709,
+            66.74595799999999,
+            66.21375,
+            64.913208
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 67.085708,
+            "2": 67.1825
+          }
+        }
+      },
+      "whole_trace_priming_max_ms_by_pass": {
+        "1": 67.085708,
+        "2": 67.1825
+      }
+    },
+    "policies/cycle-plus/W128/C128/s3fifo": {
+      "first_frame_ms_by_priming_pass": {
+        "1": 68.37975,
+        "2": 67.36387500000001
+      },
+      "measured_first_frames_ms": [
+        66.153084,
+        67.51154199999999,
+        66.733292,
+        67.494792,
+        67.844959,
+        66.565916,
+        65.41404200000001,
+        66.171667,
+        65.466958,
+        66.435041
+      ],
+      "phase_peaks": {
+        "steady": {
+          "measured_process_maxima_ms": [
+            66.153084,
+            67.51154199999999,
+            66.733292,
+            67.494792,
+            67.844959,
+            66.565916,
+            65.41404200000001,
+            66.171667,
+            65.466958,
+            66.435041
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 68.37975,
+            "2": 67.36387500000001
+          }
+        }
+      },
+      "whole_trace_priming_max_ms_by_pass": {
+        "1": 68.37975,
+        "2": 67.36387500000001
+      }
+    },
+    "policies/cycle-plus/W64/C64/flush-lru": {
+      "first_frame_ms_by_priming_pass": {
+        "1": 38.66141699999999,
+        "2": 37.971709
+      },
+      "measured_first_frames_ms": [
+        38.072583,
+        37.774459,
+        37.511416,
+        38.441916,
+        37.545417,
+        37.21325,
+        37.7005,
+        37.367625000000004,
+        37.016584,
+        36.980042
+      ],
+      "phase_peaks": {
+        "steady": {
+          "measured_process_maxima_ms": [
+            38.072583,
+            37.774459,
+            37.511416,
+            38.441916,
+            37.545417,
+            37.21325,
+            37.7005,
+            37.367625000000004,
+            37.016584,
+            36.980042
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 38.66141699999999,
+            "2": 37.971709
+          }
+        }
+      },
+      "whole_trace_priming_max_ms_by_pass": {
+        "1": 38.66141699999999,
+        "2": 37.971709
+      }
+    },
+    "policies/cycle-plus/W64/C64/lru": {
+      "first_frame_ms_by_priming_pass": {
+        "1": 1895.239458,
+        "2": 39.328875
+      },
+      "measured_first_frames_ms": [
+        39.065583000000004,
+        38.260833,
+        37.744,
+        38.139832999999996,
+        37.590582999999995,
+        38.896625,
+        37.70575,
+        37.462125,
+        37.5025,
+        37.296958
+      ],
+      "phase_peaks": {
+        "steady": {
+          "measured_process_maxima_ms": [
+            39.065583000000004,
+            38.260833,
+            37.744,
+            38.139832999999996,
+            37.590582999999995,
+            38.896625,
+            37.70575,
+            37.462125,
+            37.5025,
+            37.296958
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 1895.239458,
+            "2": 39.328875
+          }
+        }
+      },
+      "whole_trace_priming_max_ms_by_pass": {
+        "1": 1895.239458,
+        "2": 39.328875
+      }
+    },
+    "policies/cycle-plus/W64/C64/retain": {
+      "first_frame_ms_by_priming_pass": {
+        "1": 38.220125,
+        "2": 38.094375
+      },
+      "measured_first_frames_ms": [
+        37.770542,
+        38.185167,
+        37.137083000000004,
+        38.046791000000006,
+        37.195833,
+        37.447416,
+        37.142208000000004,
+        37.318292,
+        36.566375,
+        36.976958999999994
+      ],
+      "phase_peaks": {
+        "steady": {
+          "measured_process_maxima_ms": [
+            37.770542,
+            38.185167,
+            37.137083000000004,
+            38.046791000000006,
+            37.195833,
+            37.447416,
+            37.142208000000004,
+            37.318292,
+            36.566375,
+            36.976958999999994
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 38.220125,
+            "2": 38.094375
+          }
+        }
+      },
+      "whole_trace_priming_max_ms_by_pass": {
+        "1": 38.220125,
+        "2": 38.094375
+      }
+    },
+    "policies/cycle-plus/W64/C64/s3fifo": {
+      "first_frame_ms_by_priming_pass": {
+        "1": 38.683,
+        "2": 38.518125
+      },
+      "measured_first_frames_ms": [
+        38.332541,
+        38.303292000000006,
+        37.956625,
+        37.844833,
+        38.568208,
+        37.771209,
+        36.967082999999995,
+        37.359833,
+        36.439208,
+        37.451792
+      ],
+      "phase_peaks": {
+        "steady": {
+          "measured_process_maxima_ms": [
+            38.332541,
+            38.303292000000006,
+            37.956625,
+            37.844833,
+            38.568208,
+            37.771209,
+            36.967082999999995,
+            37.359833,
+            36.439208,
+            37.451792
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 38.683,
+            "2": 38.518125
+          }
+        }
+      },
+      "whole_trace_priming_max_ms_by_pass": {
+        "1": 38.683,
+        "2": 38.518125
+      }
+    },
+    "policies/hot-scan/W64/C64/flush-lru": {
+      "first_frame_ms_by_priming_pass": {
+        "1": 16.907625,
+        "2": 17.298583
+      },
+      "measured_first_frames_ms": [
+        16.399791,
+        16.297958,
+        16.4535,
+        16.291542,
+        16.281125,
+        16.682709,
+        16.253166,
+        16.408792,
+        16.221958,
+        16.122583
+      ],
+      "phase_peaks": {
+        "scan": {
+          "measured_process_maxima_ms": [
+            137.617334,
+            117.926875,
+            118.07249999999999,
+            116.234458,
+            120.87129200000001,
+            115.114125,
+            116.19699999999999,
+            115.814375,
+            114.53258299999999,
+            114.26525
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 118.979583,
+            "2": 117.35662500000001
+          }
+        },
+        "steady": {
+          "measured_process_maxima_ms": [
+            16.399791,
+            16.297958,
+            16.4535,
+            16.291542,
+            16.281125,
+            16.682709,
+            16.253166,
+            16.408792,
+            16.221958,
+            16.122583
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 16.907625,
+            "2": 17.298583
+          }
+        }
+      },
+      "whole_trace_priming_max_ms_by_pass": {
+        "1": 118.979583,
+        "2": 117.35662500000001
+      }
+    },
+    "policies/hot-scan/W64/C64/lru": {
+      "first_frame_ms_by_priming_pass": {
+        "1": 16.603125,
+        "2": 16.293041000000002
+      },
+      "measured_first_frames_ms": [
+        16.231917,
+        15.987375000000002,
+        16.427,
+        16.713334,
+        16.802457999999998,
+        16.551416,
+        16.291916,
+        16.332791999999998,
+        16.101457999999997,
+        16.250042
+      ],
+      "phase_peaks": {
+        "scan": {
+          "measured_process_maxima_ms": [
+            124.17391599999999,
+            123.508375,
+            126.184708,
+            130.809875,
+            122.997917,
+            123.66525,
+            122.48295900000001,
+            123.209542,
+            121.314042,
+            121.04175000000001
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 7482.0169160000005,
+            "2": 124.358333
+          }
+        },
+        "steady": {
+          "measured_process_maxima_ms": [
+            16.231917,
+            15.987375000000002,
+            16.427,
+            16.713334,
+            16.802457999999998,
+            16.551416,
+            16.291916,
+            16.332791999999998,
+            16.101457999999997,
+            16.250042
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 16.603125,
+            "2": 16.293041000000002
+          }
+        }
+      },
+      "whole_trace_priming_max_ms_by_pass": {
+        "1": 7482.0169160000005,
+        "2": 124.358333
+      }
+    },
+    "policies/hot-scan/W64/C64/retain": {
+      "first_frame_ms_by_priming_pass": {
+        "1": 17.019834,
+        "2": 16.754624999999997
+      },
+      "measured_first_frames_ms": [
+        16.3695,
+        16.458208,
+        17.391040999999998,
+        16.206000000000003,
+        16.217042,
+        16.290667000000003,
+        16.539875,
+        16.336291,
+        16.182292,
+        16.228458
+      ],
+      "phase_peaks": {
+        "scan": {
+          "measured_process_maxima_ms": [
+            117.778666,
+            116.166792,
+            132.763208,
+            116.171209,
+            117.84450000000001,
+            117.056917,
+            116.42770800000001,
+            116.149625,
+            115.596208,
+            114.652083
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 117.722166,
+            "2": 117.868125
+          }
+        },
+        "steady": {
+          "measured_process_maxima_ms": [
+            16.3695,
+            16.458208,
+            17.391040999999998,
+            16.206000000000003,
+            16.217042,
+            16.290667000000003,
+            16.539875,
+            16.336291,
+            16.182292,
+            16.228458
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 17.019834,
+            "2": 16.754624999999997
+          }
+        }
+      },
+      "whole_trace_priming_max_ms_by_pass": {
+        "1": 117.722166,
+        "2": 117.868125
+      }
+    },
+    "policies/hot-scan/W64/C64/s3fifo": {
+      "first_frame_ms_by_priming_pass": {
+        "1": 16.268833,
+        "2": 16.452083
+      },
+      "measured_first_frames_ms": [
+        16.689208,
+        16.646334,
+        16.230417,
+        16.519208,
+        16.389208999999997,
+        16.53425,
+        16.407083,
+        16.438458,
+        16.333958,
+        16.446709000000002
+      ],
+      "phase_peaks": {
+        "scan": {
+          "measured_process_maxima_ms": [
+            118.145375,
+            116.216417,
+            117.111667,
+            116.096666,
+            116.385125,
+            116.727834,
+            115.829583,
+            117.317875,
+            115.240333,
+            117.610917
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 117.9995,
+            "2": 118.580959
+          }
+        },
+        "steady": {
+          "measured_process_maxima_ms": [
+            16.689208,
+            16.646334,
+            16.230417,
+            16.519208,
+            16.389208999999997,
+            16.53425,
+            16.407083,
+            16.438458,
+            16.333958,
+            16.446709000000002
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 16.268833,
+            "2": 16.452083
+          }
+        }
+      },
+      "whole_trace_priming_max_ms_by_pass": {
+        "1": 117.9995,
+        "2": 118.580959
+      }
+    },
+    "policies/shuffle-plus/W128/C128/flush-lru": {
+      "first_frame_ms_by_priming_pass": {
+        "1": 66.828875,
+        "2": 66.38104200000001
+      },
+      "measured_first_frames_ms": [
+        67.123125,
+        66.789,
+        65.5545,
+        65.960375,
+        66.180125,
+        65.932458,
+        65.846583,
+        65.551667,
+        65.773458,
+        64.901041
+      ],
+      "phase_peaks": {
+        "steady": {
+          "measured_process_maxima_ms": [
+            67.123125,
+            66.789,
+            65.5545,
+            65.960375,
+            66.180125,
+            65.932458,
+            65.846583,
+            65.551667,
+            65.773458,
+            64.901041
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 66.828875,
+            "2": 66.38104200000001
+          }
+        }
+      },
+      "whole_trace_priming_max_ms_by_pass": {
+        "1": 66.828875,
+        "2": 66.38104200000001
+      }
+    },
+    "policies/shuffle-plus/W128/C128/lru": {
+      "first_frame_ms_by_priming_pass": {
+        "1": 67.520625,
+        "2": 66.232792
+      },
+      "measured_first_frames_ms": [
+        67.373666,
+        66.71508299999999,
+        67.275209,
+        66.343125,
+        65.71775000000001,
+        66.63129199999999,
+        65.806625,
+        66.118084,
+        65.77425000000001,
+        64.889291
+      ],
+      "phase_peaks": {
+        "steady": {
+          "measured_process_maxima_ms": [
+            67.373666,
+            66.71508299999999,
+            67.275209,
+            66.343125,
+            65.71775000000001,
+            66.63129199999999,
+            65.806625,
+            66.118084,
+            65.77425000000001,
+            64.889291
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 67.520625,
+            "2": 66.232792
+          }
+        }
+      },
+      "whole_trace_priming_max_ms_by_pass": {
+        "1": 67.520625,
+        "2": 66.232792
+      }
+    },
+    "policies/shuffle-plus/W128/C128/retain": {
+      "first_frame_ms_by_priming_pass": {
+        "1": 66.75366600000001,
+        "2": 67.06583300000001
+      },
+      "measured_first_frames_ms": [
+        66.59720800000001,
+        66.641166,
+        66.54050000000001,
+        66.330792,
+        67.92625,
+        66.024834,
+        65.857083,
+        65.131209,
+        65.056667,
+        66.296458
+      ],
+      "phase_peaks": {
+        "steady": {
+          "measured_process_maxima_ms": [
+            66.59720800000001,
+            66.641166,
+            66.54050000000001,
+            66.330792,
+            67.92625,
+            66.024834,
+            65.857083,
+            65.131209,
+            65.056667,
+            66.296458
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 66.75366600000001,
+            "2": 67.06583300000001
+          }
+        }
+      },
+      "whole_trace_priming_max_ms_by_pass": {
+        "1": 66.75366600000001,
+        "2": 67.06583300000001
+      }
+    },
+    "policies/shuffle-plus/W128/C128/s3fifo": {
+      "first_frame_ms_by_priming_pass": {
+        "1": 66.358125,
+        "2": 67.436792
+      },
+      "measured_first_frames_ms": [
+        66.577584,
+        67.33529200000001,
+        65.796333,
+        66.088792,
+        66.66529200000001,
+        65.885541,
+        65.82637500000001,
+        65.637584,
+        65.68291699999999,
+        65.84483300000001
+      ],
+      "phase_peaks": {
+        "steady": {
+          "measured_process_maxima_ms": [
+            66.577584,
+            67.33529200000001,
+            65.796333,
+            66.088792,
+            66.66529200000001,
+            65.885541,
+            65.82637500000001,
+            65.637584,
+            65.68291699999999,
+            65.84483300000001
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 66.358125,
+            "2": 67.436792
+          }
+        }
+      },
+      "whole_trace_priming_max_ms_by_pass": {
+        "1": 66.358125,
+        "2": 67.436792
+      }
+    },
+    "policies/shuffle-plus/W64/C64/flush-lru": {
+      "first_frame_ms_by_priming_pass": {
+        "1": 39.008209,
+        "2": 38.401667
+      },
+      "measured_first_frames_ms": [
+        38.237208,
+        37.626082999999994,
+        38.631125000000004,
+        37.924583,
+        40.247291999999995,
+        37.437208999999996,
+        37.305499999999995,
+        37.567417,
+        37.227291,
+        37.481415999999996
+      ],
+      "phase_peaks": {
+        "steady": {
+          "measured_process_maxima_ms": [
+            38.237208,
+            37.626082999999994,
+            38.631125000000004,
+            37.924583,
+            40.247291999999995,
+            37.437208999999996,
+            37.305499999999995,
+            37.567417,
+            37.227291,
+            37.481415999999996
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 39.008209,
+            "2": 38.401667
+          }
+        }
+      },
+      "whole_trace_priming_max_ms_by_pass": {
+        "1": 39.008209,
+        "2": 38.401667
+      }
+    },
+    "policies/shuffle-plus/W64/C64/lru": {
+      "first_frame_ms_by_priming_pass": {
+        "1": 38.60825,
+        "2": 37.869625
+      },
+      "measured_first_frames_ms": [
+        38.421334,
+        38.005167,
+        37.520208,
+        37.606874999999995,
+        39.2765,
+        37.215042,
+        37.364791000000004,
+        37.503667,
+        36.868959,
+        36.982875
+      ],
+      "phase_peaks": {
+        "steady": {
+          "measured_process_maxima_ms": [
+            38.421334,
+            38.005167,
+            37.520208,
+            37.606874999999995,
+            39.2765,
+            37.215042,
+            37.364791000000004,
+            37.503667,
+            36.868959,
+            36.982875
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 38.60825,
+            "2": 37.869625
+          }
+        }
+      },
+      "whole_trace_priming_max_ms_by_pass": {
+        "1": 38.60825,
+        "2": 37.869625
+      }
+    },
+    "policies/shuffle-plus/W64/C64/retain": {
+      "first_frame_ms_by_priming_pass": {
+        "1": 38.877041,
+        "2": 38.419374999999995
+      },
+      "measured_first_frames_ms": [
+        38.401417,
+        39.497959,
+        37.732,
+        37.107708,
+        39.862625,
+        37.316708,
+        37.587833,
+        37.752083999999996,
+        36.551333,
+        37.078292
+      ],
+      "phase_peaks": {
+        "steady": {
+          "measured_process_maxima_ms": [
+            38.401417,
+            39.497959,
+            37.732,
+            37.107708,
+            39.862625,
+            37.316708,
+            37.587833,
+            37.752083999999996,
+            36.551333,
+            37.078292
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 38.877041,
+            "2": 38.419374999999995
+          }
+        }
+      },
+      "whole_trace_priming_max_ms_by_pass": {
+        "1": 38.877041,
+        "2": 38.419374999999995
+      }
+    },
+    "policies/shuffle-plus/W64/C64/s3fifo": {
+      "first_frame_ms_by_priming_pass": {
+        "1": 38.593833000000004,
+        "2": 38.186541
+      },
+      "measured_first_frames_ms": [
+        37.999458,
+        37.672083,
+        37.819625,
+        37.920083,
+        38.494542,
+        37.372917,
+        36.896,
+        37.459875,
+        36.762125,
+        37.585125
+      ],
+      "phase_peaks": {
+        "steady": {
+          "measured_process_maxima_ms": [
+            37.999458,
+            37.672083,
+            37.819625,
+            37.920083,
+            38.494542,
+            37.372917,
+            36.896,
+            37.459875,
+            36.762125,
+            37.585125
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 38.593833000000004,
+            "2": 38.186541
+          }
+        }
+      },
+      "whole_trace_priming_max_ms_by_pass": {
+        "1": 38.593833000000004,
+        "2": 38.186541
+      }
+    },
+    "policies/switch/W64/C64/flush-lru": {
+      "first_frame_ms_by_priming_pass": {
+        "1": 30.807958,
+        "2": 33.192167000000005
+      },
+      "measured_first_frames_ms": [
+        31.139457999999998,
+        30.149959,
+        30.1635,
+        30.174042,
+        29.448666,
+        29.638667,
+        30.046125,
+        30.034333999999998,
+        30.028209,
+        29.758041
+      ],
+      "phase_peaks": {
+        "A": {
+          "measured_process_maxima_ms": [
+            31.139457999999998,
+            30.149959,
+            30.1635,
+            30.174042,
+            29.448666,
+            29.638667,
+            30.046125,
+            30.034333999999998,
+            30.028209,
+            29.758041
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 30.807958,
+            "2": 33.192167000000005
+          }
+        },
+        "B": {
+          "measured_process_maxima_ms": [
+            0.719459,
+            0.605833,
+            1.391167,
+            0.598875,
+            0.5329170000000001,
+            0.584458,
+            1.3960000000000001,
+            0.6563749999999999,
+            1.2956249999999998,
+            1.35225
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 0.833,
+            "2": 1.3402500000000002
+          }
+        },
+        "transition": {
+          "measured_process_maxima_ms": [
+            21.650917,
+            21.957333,
+            22.084667,
+            21.288167,
+            21.171125,
+            21.527542,
+            21.256334000000003,
+            21.021459,
+            20.961833,
+            21.22925
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 21.892916,
+            "2": 21.892
+          }
+        }
+      },
+      "whole_trace_priming_max_ms_by_pass": {
+        "1": 30.807958,
+        "2": 33.192167000000005
+      }
+    },
+    "policies/switch/W64/C64/lru": {
+      "first_frame_ms_by_priming_pass": {
+        "1": 30.36175,
+        "2": 30.479333
+      },
+      "measured_first_frames_ms": [
+        30.398292,
+        29.981875000000002,
+        30.572374999999997,
+        29.951833,
+        29.867667,
+        30.06225,
+        30.101,
+        31.168042,
+        29.857834,
+        29.622208
+      ],
+      "phase_peaks": {
+        "A": {
+          "measured_process_maxima_ms": [
+            30.398292,
+            29.981875000000002,
+            30.572374999999997,
+            29.951833,
+            29.867667,
+            30.06225,
+            30.101,
+            31.168042,
+            29.857834,
+            29.622208
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 30.36175,
+            "2": 30.479333
+          }
+        },
+        "B": {
+          "measured_process_maxima_ms": [
+            1.35875,
+            1.4727080000000001,
+            0.6810419999999999,
+            0.419167,
+            0.8212090000000001,
+            0.690375,
+            0.619625,
+            0.8409589999999999,
+            1.4710420000000002,
+            0.838917
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 1.339625,
+            "2": 0.7821250000000001
+          }
+        },
+        "transition": {
+          "measured_process_maxima_ms": [
+            21.699459,
+            21.499291,
+            21.63725,
+            21.253999999999998,
+            21.549833,
+            21.321583,
+            21.3725,
+            21.260292,
+            21.117292,
+            21.710334
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 21.858458000000002,
+            "2": 21.306458
+          }
+        }
+      },
+      "whole_trace_priming_max_ms_by_pass": {
+        "1": 30.36175,
+        "2": 30.479333
+      }
+    },
+    "policies/switch/W64/C64/retain": {
+      "first_frame_ms_by_priming_pass": {
+        "1": 30.130416,
+        "2": 30.374541
+      },
+      "measured_first_frames_ms": [
+        30.027541000000003,
+        30.2205,
+        29.985166,
+        30.260291000000002,
+        30.153375,
+        30.484209000000003,
+        30.084834,
+        29.507459,
+        29.451708,
+        29.419166999999998
+      ],
+      "phase_peaks": {
+        "A": {
+          "measured_process_maxima_ms": [
+            30.027541000000003,
+            30.2205,
+            29.985166,
+            30.260291000000002,
+            30.153375,
+            30.484209000000003,
+            30.084834,
+            29.507459,
+            29.451708,
+            29.419166999999998
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 30.130416,
+            "2": 30.374541
+          }
+        },
+        "B": {
+          "measured_process_maxima_ms": [
+            1.305084,
+            0.769125,
+            0.6032080000000001,
+            0.669792,
+            0.6225,
+            0.575583,
+            0.569458,
+            0.829875,
+            0.76075,
+            0.818375
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 1.54925,
+            "2": 0.577292
+          }
+        },
+        "transition": {
+          "measured_process_maxima_ms": [
+            22.204916,
+            21.695791,
+            21.666167,
+            21.091042,
+            21.165375,
+            21.483791,
+            20.999875000000003,
+            21.2635,
+            20.927584,
+            21.043333
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 21.763834,
+            "2": 21.507292
+          }
+        }
+      },
+      "whole_trace_priming_max_ms_by_pass": {
+        "1": 30.130416,
+        "2": 30.374541
+      }
+    },
+    "policies/switch/W64/C64/s3fifo": {
+      "first_frame_ms_by_priming_pass": {
+        "1": 30.620459,
+        "2": 30.509417
+      },
+      "measured_first_frames_ms": [
+        30.978833,
+        30.345916,
+        30.096125,
+        29.491,
+        30.242542,
+        30.777041,
+        30.063375,
+        29.554167,
+        29.521791,
+        29.651958
+      ],
+      "phase_peaks": {
+        "A": {
+          "measured_process_maxima_ms": [
+            30.978833,
+            30.345916,
+            30.096125,
+            29.491,
+            30.242542,
+            30.777041,
+            30.063375,
+            29.554167,
+            29.521791,
+            29.651958
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 30.620459,
+            "2": 30.509417
+          }
+        },
+        "B": {
+          "measured_process_maxima_ms": [
+            19.473875000000003,
+            19.682499999999997,
+            19.994708,
+            19.375916,
+            19.014667,
+            19.290542000000002,
+            19.139125,
+            18.8295,
+            18.746084,
+            18.930209
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 19.360292,
+            "2": 19.947084
+          }
+        },
+        "transition": {
+          "measured_process_maxima_ms": [
+            21.740167,
+            22.494042,
+            21.734417,
+            21.451209,
+            21.251416,
+            21.375875,
+            21.485708,
+            21.010458999999997,
+            21.364792,
+            21.515458000000002
+          ],
+          "priming_max_ms_by_pass": {
+            "1": 21.499666,
+            "2": 21.787417
+          }
+        }
+      },
+      "whole_trace_priming_max_ms_by_pass": {
+        "1": 30.620459,
+        "2": 30.509417
+      }
+    }
+  },
+  "priming_processes": 112,
+  "simulation_records": 7200,
+  "source": {
+    "archive": "femtovg-fa5d6a3.tar.gz",
+    "base": {
+      "commit": "fa5d6a36818e79be1e8ea2a32eca3564e893180f",
+      "renderer_sha256": "b95cde236a73e3f03eccd9409a6c408e77df66df8eb111cd1fed11b33ded5d4b"
+    },
+    "candidate": {
+      "commit": "d5241b90032d8bfaca305d993cef30a0277f8898",
+      "renderer_sha256": "053fe784e0829280eb64e724ecdb3d00caed7230609d8525013a3b2f8074d649"
+    },
+    "note": "Library-only base snapshot. Candidate patch preserves the current PR renderer byte-for-byte before benchmark instrumentation; common benchmark dependency feature changes follow.",
+    "repository": "https://github.com/femtovg/femtovg",
+    "sha256": "41d1a8a103842fd4a5eef49788e61bb43739fa208c3896c03c41faba17d702c1"
+  },
+  "study_processes": 320
+}
