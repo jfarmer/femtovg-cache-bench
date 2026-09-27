@@ -81,7 +81,7 @@ def analyze(out):
              "A separate repeat of the proposal versus #343 using the exact pinned renderer sources and release settings of the [primary report](../../REPORT.md). "
              "This is a synthetic library benchmark; no application usage was recorded.", "",
              "Twenty paired blocks per workload, with policy order randomized and balanced ten-first/ten-second for each policy. "
-             "Workload order is randomized within each round. The seed, full schedule, and protocol were committed before measurement. "
+             "Workload order is randomized within each round. The scheduling algorithm, seed, and protocol were committed before measurement; the full realized schedule was saved before the first launch. "
              "Each process records one initial frame, five warmup frames, and 100 measured frames. Two full priming passes precede the measured blocks. "
              "The Metal cache-size override is explicitly unset; subsequent driver-cache eviction/invalidation remains uncontrolled. No runs are excluded.", "",
              f"Harness commit: `{meta['harness_commit']}`. Started: {meta['started_utc']}. Finished: {meta['finished_utc']}.", "",

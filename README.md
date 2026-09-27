@@ -37,6 +37,8 @@ Building regenerates `vendor/femtovg/`; make changes in `patches/`, not that dir
 
 ## Results and methodology
 
+- [Focused randomized confirmation](results/confirmation-d5241b9/README.md): twenty paired repeats of the proposal versus #343 on fitting, just-over-capacity, and mixed workloads. Run with `python3 scripts/confirm-report.py --out runs/my-confirmation`.
+
 - **[Primary PR report](REPORT.md)**: current PR/base results, boundary cases, policy tradeoffs, confidence intervals, memory and cache-control diagnostics. [Protocol](docs/report-protocol.md).
 
 - [Metal cache-control probe](results/metal-cache-control-probe/README.md): observed first-use effects of the undocumented cache-size override.

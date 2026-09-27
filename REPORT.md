@@ -125,6 +125,18 @@ Resident/ghost counts, HAL live pipelines, process peak RSS, physical footprint 
 
 The proposal addresses repeated creation caused by small intervening flushes without adding a cache dependency. The measured boundaries show where it improves over #343's conditional sweep. Its soft target and sensitivity to flush grouping are explicit costs. Strict LRU gives a hard limit, but simple cyclic traces expose its capacity cliff; S3-FIFO adds policy and metadata complexity. The policy choice remains open to realistic workload traces and maintainer preferences. This report supports the proposed mechanism and characterizes tradeoffs; it does not establish application-wide speedups or the ideal capacity for all applications.
 
+## Focused randomized confirmation
+
+A separate repeat used twenty adjacent pairs per workload, with balanced randomized policy order fixed before measurement. It reused the pinned renderers and normal-cache priming protocol. All 120 measured and 12 priming process profiles match the primary campaign at every flush; no runs were excluded.
+
+| Workload | #343 median (ms) | Proposed median (ms) | Median paired proposed/#343 ratio |
+| --- | ---: | ---: | ---: |
+| 64 | 0.351 | 0.320 | 0.998 |
+| 65 | 25.182 | 1.128 | 0.044 |
+| mixed | 0.745 | 0.748 | 0.998 |
+
+The paired ratio is the median of within-pair process-median ratios, not the ratio of the two aggregate medians. The proposal is faster in 20 of 20 pairs at 65 states. The fitting and mixed cases have median paired ratios close to one; this repeat does not establish statistical equivalence. See the [confirmation report, p95 values, protocol and raw data](results/confirmation-d5241b9/README.md). These observations are kept separate from the primary estimates above.
+
 ## Reproduction and complete evidence
 
 ```sh

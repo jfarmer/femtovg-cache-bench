@@ -286,6 +286,28 @@ def main():
                f"- [Historical work/timing sanity check for this campaign]({link}/analysis/sanity.md).",
                f"- [Direct priming]({link}/direct/priming.jsonl.gz) and [policy priming]({link}/policies/priming.jsonl.gz).",
                "- [Historical extraction sanity check](results/reproduction-2026-09-27/README.md) and [initial Metal-control probe](results/metal-cache-control-probe/README.md). These support validation and do not supply the primary performance numbers above."]
+    confirmation = ROOT / "results/confirmation-d5241b9"
+    if (confirmation / "metadata.json").exists():
+        confirmation_meta = json.loads((confirmation / "metadata.json").read_text())
+        if confirmation_meta["source"] == meta["source"]:
+            repeat = json.loads((confirmation / "summary.json").read_text())
+            paired = json.loads((confirmation / "paired-ratios.json").read_text())
+            confirmation_lines = ["## Focused randomized confirmation", "",
+                "A separate repeat used twenty adjacent pairs per workload, with balanced randomized policy order fixed before measurement. "
+                "It reused the pinned renderers and normal-cache priming protocol. All 120 measured and 12 priming process profiles match the primary campaign at every flush; no runs were excluded.", "",
+                "| Workload | #343 median (ms) | Proposed median (ms) | Median paired proposed/#343 ratio |",
+                "| --- | ---: | ---: | ---: |"]
+            for case in ("64", "65", "mixed"):
+                before = repeat[f"{case}/pr343"]["medians"]["completed_p50_ms"]
+                after = repeat[f"{case}/flush-lru64"]["medians"]["completed_p50_ms"]
+                confirmation_lines.append(f"| {case} | {before:.3f} | {after:.3f} | {statistics.median(paired[case]):.3f} |")
+            confirmation_lines += ["", "The paired ratio is the median of within-pair process-median ratios, not the ratio of the two aggregate medians. "
+                f"The proposal is faster in {sum(value < 1 for value in paired['65'])} of {len(paired['65'])} pairs at 65 states. "
+                "The fitting and mixed cases have median paired ratios close to one; this repeat does not establish statistical equivalence. "
+                "See the [confirmation report, p95 values, protocol and raw data](results/confirmation-d5241b9/README.md). "
+                "These observations are kept separate from the primary estimates above.", ""]
+            location = report.index("## Reproduction and complete evidence")
+            report[location:location] = confirmation_lines
     (ROOT / "REPORT.md").write_text("\n".join(report)+"\n")
     print(f"Generated REPORT.md and {args.data}/analysis")
 
