@@ -1,0 +1,26 @@
+{
+  "runs": 10,
+  "frames": 100,
+  "platform": "macOS-26.6.2-arm64-arm-64bit",
+  "rustc": "rustc 1.96.0 (ac68faa20 2026-05-25)\nbinary: rustc\ncommit-hash: ac68faa20c58cbccd01ee7208bf3b6e93a7d7f96\ncommit-date: 2026-05-25\nhost: aarch64-apple-darwin\nrelease: 1.96.0\nLLVM version: 22.1.2\n",
+  "archive_sha256": "d01b5ae2d028f7d4e01d310d95a984337742e398bee944a1935f6ea7b1f42225",
+  "lock_sha256": "9c50f1122521856ffd9db42e06111f4d758acf8bf45a7f23813829c132091c7d",
+  "binaries": {
+    "upstream": {
+      "binary_sha256": "c8cb04991c1dbba6425b26e192430a558d6e2e21ca76d90a2e84fdea2d64fc08",
+      "renderer_sha256": "6ce7d1e98487306081f66ee007a25032770822f230956720149937a255453129"
+    },
+    "pr343": {
+      "binary_sha256": "c0670b61da538ccfcf8f147c81d87a5dfd061b67f610c8f733626b8e984c3191",
+      "renderer_sha256": "053784c1757ad3d27d178fb42733be912748c5fa57bc31676987b2468e274e8d"
+    },
+    "flush-lru64": {
+      "binary_sha256": "644171e9ebb760965bf41873ea07f831fad97ccb1cb1aee05119ebe8178c1cf2",
+      "renderer_sha256": "315c84961e9ac51d9caf513a92a78bed4f173a81b881e1c98aaa874c9fe86eef"
+    },
+    "strict-lru128": {
+      "binary_sha256": "e6174c9c1bc1004dcb5d6c2f7514e35c39efbc36b300547fc942d4beaa4f3124",
+      "renderer_sha256": "6f7821e4ff132505f477c935c30b1ed7c55f7f446fd298c6b0828c319716c631"
+    }
+  }
+}

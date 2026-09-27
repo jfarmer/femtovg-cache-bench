@@ -1,0 +1,29 @@
+--- a/src/renderer/wgpu.rs
++++ b/src/renderer/wgpu.rs
+@@ -263,7 +263,7 @@
+     }
+ }
+ 
+-type PipelineCache = Rc<RefCell<lru::LruCache<PipelineState, wgpu::RenderPipeline>>>;
++type PipelineCache = Rc<RefCell<pipeline_cache_policy::Cache<PipelineState, wgpu::RenderPipeline>>>;
+ 
+ /// WGPU renderer.
+ #[derive(Debug)]
+@@ -493,7 +493,7 @@
+             bind_group_layout,
+             viewport_bind_group_layout,
+             pipeline_layout,
+-            pipeline_cache: Rc::new(RefCell::new(lru::LruCache::new(std::num::NonZeroUsize::new(128).unwrap()))),
++            pipeline_cache: Default::default(),
+         }
+     }
+ }
+@@ -738,7 +738,7 @@
+ 
+         let command_buffer = encoder.finish();
+ 
+-        // Strict LRU evicts on insertion; no end-of-flush sweep.
++        self.pipeline_cache.borrow_mut().finish_flush();
+ 
+         BENCH_RESIDENT.store(self.pipeline_cache.borrow().len(), std::sync::atomic::Ordering::Relaxed);
+         Some(command_buffer)

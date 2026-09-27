@@ -1,0 +1,29 @@
+{
+  "binary_sha256": "bfbcacfcb8214fd78f76f8c2a4cbda22a03ef821be53a26170fdd22e1a2d6bab",
+  "lock_sha256": "ce7f14876b56fc177620be3532b0c1a37b0d6a19c928d348d284c372734f7dba",
+  "scales": [
+    64,
+    128,
+    256
+  ],
+  "capacities": [
+    32,
+    64,
+    128,
+    256,
+    512
+  ],
+  "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+  ],
+  "frames": 100
+}

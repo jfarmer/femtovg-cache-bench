@@ -1,0 +1,8 @@
+{
+  "repository": "https://github.com/femtovg/femtovg",
+  "commit": "9f2523bb794089e9c1be8114057afb283e97a3ea",
+  "archive": "femtovg-9f2523b.tar.gz",
+  "sha256": "d01b5ae2d028f7d4e01d310d95a984337742e398bee944a1935f6ea7b1f42225",
+  "license": "MIT OR Apache-2.0",
+  "contents": "Library sources, Cargo.toml, build.rs, README and upstream licenses; examples, assets and tests are omitted."
+}

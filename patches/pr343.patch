@@ -1,0 +1,18 @@
+--- a/src/renderer/wgpu.rs
++++ b/src/renderer/wgpu.rs
+@@ -742,9 +742,12 @@
+ 
+         let command_buffer = encoder.finish();
+ 
+-        self.pipeline_cache
+-            .borrow_mut()
+-            .retain(|_, cached_pipeline| std::mem::replace(&mut cached_pipeline.accessed, false));
++        {
++            let mut pipeline_cache = self.pipeline_cache.borrow_mut();
++            if pipeline_cache.len() > 64 {
++                pipeline_cache.retain(|_, cached_pipeline| std::mem::replace(&mut cached_pipeline.accessed, false));
++            }
++        }
+ 
+         BENCH_RESIDENT.store(self.pipeline_cache.borrow().len(), std::sync::atomic::Ordering::Relaxed);
+         Some(command_buffer)

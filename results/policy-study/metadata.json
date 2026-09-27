@@ -1,0 +1,59 @@
+{
+  "runs": 10,
+  "frames": 100,
+  "cases": [
+    [
+      "cycle-plus",
+      128,
+      128
+    ],
+    [
+      "cycle-plus",
+      128,
+      256
+    ],
+    [
+      "shuffle-plus",
+      128,
+      128
+    ],
+    [
+      "hot-scan",
+      64,
+      64
+    ],
+    [
+      "switch",
+      64,
+      64
+    ],
+    [
+      "batch-single",
+      64,
+      64
+    ],
+    [
+      "batch-split",
+      64,
+      64
+    ]
+  ],
+  "policies": [
+    "lru",
+    "flush-lru",
+    "s3fifo",
+    "retain"
+  ],
+  "platform": "macOS-26.6.2-arm64-arm-64bit",
+  "rustc": "rustc 1.96.0 (ac68faa20 2026-05-25)\nbinary: rustc\ncommit-hash: ac68faa20c58cbccd01ee7208bf3b6e93a7d7f96\ncommit-date: 2026-05-25\nhost: aarch64-apple-darwin\nrelease: 1.96.0\nLLVM version: 22.1.2\n",
+  "binary_sha256": "bfbcacfcb8214fd78f76f8c2a4cbda22a03ef821be53a26170fdd22e1a2d6bab",
+  "lock_sha256": "ce7f14876b56fc177620be3532b0c1a37b0d6a19c928d348d284c372734f7dba",
+  "archive_sha256": "d01b5ae2d028f7d4e01d310d95a984337742e398bee944a1935f6ea7b1f42225",
+  "sources": {
+    "tools/femtovg-cache-bench/policy/src/lib.rs": "6eac43e3bb0699a9b2924621cab416160b16879af3c10d3b16f275f70bea8571",
+    "tools/femtovg-cache-bench/src/bin/policy-study.rs": "67946119ddb96f35245268ae733d8be36b267587411518a2bd9d6c2366588fa9",
+    "tools/femtovg-cache-bench/src/main.rs": "af672655ade278fbe553b86eb31e0154f9325abc25f138a47643aa4c8e4a28e2",
+    "tools/femtovg-cache-bench/src/study.rs": "f84bd4b9c0cd87a94afe9f554d8c25b4bc7ee77f46b1f7e9fb4c61af278206be"
+  },
+  "renderer_sha256": "56c23c9463b5850ffd645f56239dbff33b3e1838f875270568a1c9754d6afaaf"
+}

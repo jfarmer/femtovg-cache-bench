@@ -1,0 +1,27 @@
+[package]
+name = "femtovg-cache-bench"
+version = "0.1.0"
+edition = "2021"
+publish = false
+license = "MIT"
+description = "Reproducible FemtoVG pipeline-cache policy experiments"
+
+[workspace]
+members = ["crates/cache-policy"]
+exclude = ["vendor/femtovg"]
+resolver = "2"
+
+[dependencies]
+pipeline-cache-policy = { path = "crates/cache-policy" }
+femtovg = { path = "vendor/femtovg", default-features = false, features = ["wgpu"] }
+wgpu = { version = "=30.0.1", features = ["counters"] }
+pollster = "1.0"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+libc = "0.2"
+
+[target.'cfg(target_os = "macos")'.dependencies]
+objc2-metal = "0.3.2"
+
+[profile.release]
+debug = 1

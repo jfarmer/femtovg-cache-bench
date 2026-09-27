@@ -1,0 +1,10 @@
+[package]
+name = "pipeline-cache-policy"
+version = "0.1.0"
+edition = "2021"
+publish = false
+license = "MIT"
+
+[dependencies]
+lru = { version = "0.18", default-features = false }
+serde = { version = "1", features = ["derive"] }

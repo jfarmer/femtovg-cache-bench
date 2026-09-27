@@ -1,0 +1,81 @@
+--- a/src/renderer/wgpu.rs
++++ b/src/renderer/wgpu.rs
+@@ -263,11 +263,7 @@
+     }
+ }
+ 
+-#[derive(Debug)]
+-struct CachedPipeline {
+-    pipeline: wgpu::RenderPipeline,
+-    accessed: bool,
+-}
++type PipelineCache = Rc<RefCell<lru::LruCache<PipelineState, wgpu::RenderPipeline>>>;
+ 
+ /// WGPU renderer.
+ #[derive(Debug)]
+@@ -289,7 +285,7 @@
+     bind_group_layout: wgpu::BindGroupLayout,
+     viewport_bind_group_layout: wgpu::BindGroupLayout,
+     pipeline_layout: wgpu::PipelineLayout,
+-    pipeline_cache: Rc<RefCell<HashMap<PipelineState, CachedPipeline>>>,
++    pipeline_cache: PipelineCache,
+ }
+ 
+ /// Rasterizes an image element into an offscreen canvas at the given size.
+@@ -497,7 +493,7 @@
+             bind_group_layout,
+             viewport_bind_group_layout,
+             pipeline_layout,
+-            pipeline_cache: Default::default(),
++            pipeline_cache: Rc::new(RefCell::new(lru::LruCache::new(std::num::NonZeroUsize::new(128).unwrap()))),
+         }
+     }
+ }
+@@ -742,9 +738,7 @@
+ 
+         let command_buffer = encoder.finish();
+ 
+-        self.pipeline_cache
+-            .borrow_mut()
+-            .retain(|_, cached_pipeline| std::mem::replace(&mut cached_pipeline.accessed, false));
++        // Strict LRU evicts on insertion; no end-of-flush sweep.
+ 
+         BENCH_RESIDENT.store(self.pipeline_cache.borrow().len(), std::sync::atomic::Ordering::Relaxed);
+         Some(command_buffer)
+@@ -2234,7 +2228,7 @@
+     current_bind_group_state: Option<BindGroupState>,
+     current_bind_group: Option<wgpu::BindGroup>,
+     bind_group_layout: wgpu::BindGroupLayout,
+-    pipeline_cache: Rc<RefCell<HashMap<PipelineState, CachedPipeline>>>,
++    pipeline_cache: PipelineCache,
+     pipeline_layout: wgpu::PipelineLayout,
+ }
+ 
+@@ -2248,7 +2242,7 @@
+         shader_module: Rc<wgpu::ShaderModule>,
+         bind_group_layout: wgpu::BindGroupLayout,
+         pipeline_layout: wgpu::PipelineLayout,
+-        pipeline_cache: Rc<RefCell<HashMap<PipelineState, CachedPipeline>>>,
++        pipeline_cache: PipelineCache,
+     ) -> Self {
+         Self {
+             device: device.clone(),
+@@ -2337,15 +2331,10 @@
+         // An unchanged pipeline was looked up, and marked accessed, when it was bound.
+         if render_pass_builder.current_pipeline_state.as_ref() != Some(&pipeline_state) {
+             let mut pipeline_cache = self.pipeline_cache.borrow_mut();
+-            let render_pipeline = pipeline_cache.entry(pipeline_state.clone()).or_insert_with(|| {
+-                let pipeline = pipeline_state.materialize(&self.device, &self.pipeline_layout, &self.shader_module);
+-                CachedPipeline {
+-                    pipeline,
+-                    accessed: false,
+-                }
++            let render_pipeline = pipeline_cache.get_or_insert(pipeline_state.clone(), || {
++                pipeline_state.materialize(&self.device, &self.pipeline_layout, &self.shader_module)
+             });
+-            render_pipeline.accessed = true;
+-            render_pass.set_pipeline(&render_pipeline.pipeline);
++            render_pass.set_pipeline(render_pipeline);
+             render_pass_builder.current_pipeline_state = Some(pipeline_state);
+         }
+     }
