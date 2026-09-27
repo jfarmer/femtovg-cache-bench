@@ -1,11 +1,15 @@
 """Generate the standalone PR report and complete tables from a finished primary run."""
 import argparse
+from collections import Counter
+import csv
 import gzip
 import importlib.util
 import json
 import math
 from pathlib import Path
 import statistics
+import tempfile
+import shutil
 
 from common import ROOT
 
@@ -48,6 +52,16 @@ def main():
     with gzip.open(data / "policies/simulation.jsonl.gz", "rt") as raw:
         if sum(1 for _ in raw) != 7200:
             raise RuntimeError("incomplete CPU sweep")
+    expected_direct = {(scenario, policy) for scenario in direct.SCENARIOS for policy in DIRECT_POLICIES}
+    expected_study = {(scenario, scale, capacity, policy) for scenario, scale, capacity in meta["study_cases"] for policy in meta["study_policies"]}
+    if Counter((r["scenario"], r["policy"]) for r in a) != Counter({case: 10 for case in expected_direct}):
+        raise RuntimeError("direct case coverage differs from the protocol")
+    if Counter((r["scenario"], r["scale"], r["capacity"], r["policy"]) for r in b) != Counter({case: 10 for case in expected_study}):
+        raise RuntimeError("policy case coverage differs from the protocol")
+    for scenario, scale, capacity, policy in expected_study:
+        seeds = [r["seed"] for r in b if (r["scenario"], r["scale"], r["capacity"], r["policy"]) == (scenario, scale, capacity, policy)]
+        if sorted(seeds) != list(range(1, 11)):
+            raise RuntimeError("policy seeds are missing or duplicated")
     for run in b:
         if sum(f["created"] for frame in run["frames"] for f in frame["flushes"]) != run["model_stats"]["misses"]:
             raise RuntimeError("GPU materialization totals differ from model totals")
@@ -55,7 +69,10 @@ def main():
     if direct_summary != json.loads((data / "direct/summary.json").read_text()):
         raise RuntimeError("direct summary does not reproduce")
     saved_policy_summary = json.loads((data / "policies/summary.json").read_text())
-    policy_summary = study.summarize(data / "policies")
+    with tempfile.TemporaryDirectory(prefix="femtovg-report-") as scratch:
+        scratch = Path(scratch)
+        shutil.copyfile(data / "policies/gpu.jsonl.gz", scratch / "gpu.jsonl.gz")
+        policy_summary = study.summarize(scratch)
     if policy_summary != saved_policy_summary:
         raise RuntimeError("policy summary does not reproduce")
     direct_profiles = {}
@@ -156,14 +173,23 @@ def main():
                 cold_lines.append(f"| {policy} | {'unset' if setting is None else '0'} | {statistics.median(first):.2f} | {statistics.median(measured):.3f} |")
     analysis = data / "analysis"
     analysis.mkdir(exist_ok=True)
+    with (analysis / "timing.csv").open("w", newline="") as output:
+        writer = csv.writer(output)
+        writer.writerow(("suite", "case", "metric", "median_ms", "interval_lower_ms", "interval_upper_ms", "coverage"))
+        for suite, summary in (("direct", direct_summary), ("policies", policy_summary)):
+            for case, entry in sorted(summary.items()):
+                for metric in entry["medians"]:
+                    if metric.startswith(("cpu_", "completed_")):
+                        ci = stats.median_interval([r[metric] for r in entry["per_run"]])
+                        writer.writerow((suite, case, metric, ci["median"], ci["lower"], ci["upper"], ci["coverage"]))
     (analysis / "tables.md").write_text("\n".join(table)+"\n")
     (analysis / "priming.md").write_text("\n".join(priming_lines)+"\n")
     (analysis / "cold-control.md").write_text("\n".join(cold_lines)+"\n")
     (analysis / "evidence.json").write_text(json.dumps(evidence, indent=2, sort_keys=True)+"\n")
     link = args.data.as_posix()
     report = ["# FemtoVG WGPU pipeline-cache evaluation", "",
-              "This report evaluates the proposed flush-aware pipeline cache against upstream behavior, PR #343's conditional sweep, and alternative retention policies. "
-              "The primary evidence is a new, explicitly primed measurement campaign on the PR's current upstream base. Historical reproduction is supporting validation.", "",
+              "This report evaluates the proposed flush-aware pipeline cache against upstream behavior, [PR #343](https://github.com/femtovg/femtovg/pull/343)'s conditional sweep, and alternative retention policies. "
+              "The primary evidence is an explicitly primed measurement campaign on the PR's current upstream base.", "",
               "## Proposed change and scope", "",
               f"The proposed renderer is pinned to `{meta['source']['candidate']['commit']}`; upstream is `{meta['source']['base']['commit']}`. "
               "The source archive and patch are bundled. The build verifies that the candidate renderer matches the PR revision byte-for-byte before adding creation/residency counters. "
@@ -190,6 +216,25 @@ def main():
               "See [NIST on order-statistic intervals for a median](https://itl.nist.gov/div898/software/dataplot/refman1/auxillar/mediancl.htm).", "",
               f"See the [exact protocol](docs/report-protocol.md), [source pins](vendor/report-source.json), [measurement metadata]({link}/metadata.json), "
               f"[priming observations]({link}/analysis/priming.md), and [matched-work cold-start check]({link}/analysis/cold-control.md).", "",
+              "## Cache controls and observed variation", "",
+              "These are explicitly primed, normal-cache runs. Cache eviction or invalidation during measurement is uncontrolled; priming does not guarantee persistent warmth. "
+              "The warm-up observations cover full traces, including late scan states. The first LRU hot-scan priming process has a scan-frame maximum of "
+              f"{evidence['priming']['policies/hot-scan/W64/C64/lru']['phase_peaks']['scan']['priming_max_ms_by_pass'][1]:.2f} ms; "
+              f"the second pass is {evidence['priming']['policies/hot-scan/W64/C64/lru']['phase_peaks']['scan']['priming_max_ms_by_pass'][2]:.2f} ms. "
+              "This is observable evidence that preparation matters; it does not identify every internal cache or prove all later lookups hit.", "",
+              "The matched-work diagnostic reports first-use timing for the same 17 materializations under both settings, and verifies unchanged creation/residency profiles across settings. "
+              + (f"First-frame medians are {statistics.median(evidence['cold_control']['upstream/None']['first_frames_ms']):.2f} ms upstream and "
+                 f"{statistics.median(evidence['cold_control']['flush-lru64/None']['first_frames_ms']):.2f} ms proposed with the override unset, versus "
+                 f"{statistics.median(evidence['cold_control']['upstream/0']['first_frames_ms']):.2f} and "
+                 f"{statistics.median(evidence['cold_control']['flush-lru64/0']['first_frames_ms']):.2f} ms with it set to zero. " if 'cold_control' in evidence else "The Metal-specific diagnostic was not run on this platform. ") +
+              "The undocumented zero-size override is a diagnostic intervention, not a supported global reset or a guarantee that repeated creations remain cold. "
+              "Subsequent frames retain within-process reuse effects. Three launches per condition do not establish precise statistical equivalence between policies.", "",
+              "Some direct-comparison processes remain noticeably slower than others after priming; the raw per-process results and intervals retain that variation. "
+              "For example, the 65-state #343 process medians range from "
+              f"{min(r['completed_p50_ms'] for r in direct_summary['65/pr343']['per_run']):.2f} to "
+              f"{max(r['completed_p50_ms'] for r in direct_summary['65/pr343']['per_run']):.2f} ms. "
+              "Several slower direct processes occur early in the campaign. Their cause is unresolved; warming driver caches does not control all session-level timing variation. "
+              "No run is dropped, and small timing differences between policies with the same creation counts should not be interpreted as a reliable ranking.", "",
               "## Actual PR: boundary and mixed-operation results", "",
               "Boundary workloads visit N−1 blend states in one draw flush, then a separate clear flush; N includes clear. "
               "The mixed workload alternates glyph-atlas rendering, clipped opacity layers, blur, screen drawing and clear. "
@@ -232,12 +277,13 @@ def main():
                "Its soft target and sensitivity to flush grouping are explicit costs. Strict LRU gives a hard limit, but simple cyclic traces expose its capacity cliff; S3-FIFO adds policy and metadata complexity. "
                "The policy choice remains open to realistic workload traces and maintainer preferences. This report supports the proposed mechanism and characterizes tradeoffs; it does not establish application-wide speedups or the ideal capacity for all applications.", "",
                "## Reproduction and complete evidence", "",
-               "```sh", "python3 scripts/run-report.py --out runs/my-pr-report", "python3 scripts/render-report.py runs/my-pr-report", "```", "",
-               "The second command regenerates REPORT.md and the analysis files from saved data. All pinned project sources and analysis scripts are contained in this repository. "
+               "```sh", "python3 scripts/run-report.py --out runs/my-pr-report", "python3 scripts/report-sanity.py runs/my-pr-report", "python3 scripts/render-report.py runs/my-pr-report", "```", "",
+               "The final command regenerates REPORT.md and the analysis files from saved data. All pinned project sources and analysis scripts are contained in this repository. "
                "A working Rust/Python/Git installation and GPU backend are required for a fresh measurement campaign. The controlled Metal diagnostic is macOS-specific.", "",
-               f"- [Full timing/memory tables]({link}/analysis/tables.md) and [machine-readable evidence]({link}/analysis/evidence.json).",
+               f"- [Timing/residency tables]({link}/analysis/tables.md), [all CPU/completed quantiles and intervals]({link}/analysis/timing.csv), and [machine-readable evidence]({link}/analysis/evidence.json).",
                f"- [Direct raw frames]({link}/direct/runs.jsonl.gz) and [summary]({link}/direct/summary.json).",
-               f"- [Policy-study raw frames]({link}/policies/gpu.jsonl.gz), [summary]({link}/policies/summary.json), and [CPU sweep]({link}/policies/simulation.jsonl.gz).",
+               f"- [Policy-study raw frames]({link}/policies/gpu.jsonl.gz), [summary]({link}/policies/summary.json), [CPU sweep]({link}/policies/simulation.jsonl.gz), and [capacity/phase summaries]({link}/policies/simulation-summary.json).",
+               f"- [Historical work/timing sanity check for this campaign]({link}/analysis/sanity.md).",
                f"- [Direct priming]({link}/direct/priming.jsonl.gz) and [policy priming]({link}/policies/priming.jsonl.gz).",
                "- [Historical extraction sanity check](results/reproduction-2026-09-27/README.md) and [initial Metal-control probe](results/metal-cache-control-probe/README.md). These support validation and do not supply the primary performance numbers above."]
     (ROOT / "REPORT.md").write_text("\n".join(report)+"\n")
