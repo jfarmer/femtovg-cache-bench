@@ -57,6 +57,8 @@ def input_hashes():
     """Fingerprint build inputs so runs cannot silently use stale executables."""
     paths = [ROOT / "Cargo.toml", ROOT / "Cargo.lock", ARCHIVE,
              ROOT / "vendor/femtovg.json"]
+    paths.extend(p for p in (ROOT / "vendor").iterdir()
+                 if p.is_file() and p not in paths)
     for directory in ("src", "crates", "patches", "scripts"):
         paths.extend(p for p in (ROOT / directory).rglob("*")
                      if p.is_file() and "__pycache__" not in p.parts)

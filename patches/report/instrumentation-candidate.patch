@@ -1,0 +1,37 @@
+--- a/src/renderer/wgpu.rs
++++ b/src/renderer/wgpu.rs
+@@ -250,6 +250,18 @@
+     .union(crate::ImageFlags::NEAREST);
+ 
+ type SamplerCache = Rc<RefCell<HashMap<crate::ImageFlags, wgpu::Sampler>>>;
++
++// Benchmark-only counters: one renderer per process, sampled after each flush.
++static BENCH_CREATIONS: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(0);
++static BENCH_RESIDENT: std::sync::atomic::AtomicUsize = std::sync::atomic::AtomicUsize::new(0);
++
++impl WGPURenderer {
++    /// Total creations and retained entries after the most recent flush (benchmark only).
++    pub fn benchmark_pipeline_counts() -> (u64, usize) {
++        use std::sync::atomic::Ordering::Relaxed;
++        (BENCH_CREATIONS.load(Relaxed), BENCH_RESIDENT.load(Relaxed))
++    }
++}
+ 
+ /// Retention target after a flush; pipelines used in that flush are always kept.
+ /// The demo binds 22 states per frame; 64 leaves room for several such sets.
+@@ -766,6 +778,7 @@
+             |cached_pipeline| cached_pipeline.last_used,
+         );
+ 
++        BENCH_RESIDENT.store(self.pipeline_cache.borrow().len(), std::sync::atomic::Ordering::Relaxed);
+         Some(command_buffer)
+     }
+ 
+@@ -1866,6 +1879,7 @@
+         #[cfg(test)]
+         pipeline_cache_tests::CREATED_PIPELINES.with(|count| count.set(count.get() + 1));
+ 
++        BENCH_CREATIONS.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+         let vertex_entry_point = if self.render_to_texture {
+             "vs_main_texture"
+         } else {

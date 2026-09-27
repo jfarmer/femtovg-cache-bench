@@ -1,0 +1,533 @@
+diff --git a/Cargo.toml b/Cargo.toml
+index 851f5f1..4692ac5 100644
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -79,7 +79,7 @@ cosmic-text = "0.19.0"
+ swash = "0.2.6"
+ lazy_static = "1.4.0"
+ pollster = "1.0"
+-wgpu = { version = "30.0.0" }
++wgpu = { version = "30.0.0", features = ["counters"] }
+ 
+ [target.'cfg(not(target_arch = "wasm32"))'.dev-dependencies]
+ glutin = "0.32.3"
+diff --git a/src/renderer/wgpu.rs b/src/renderer/wgpu.rs
+index 508ba45..a68664a 100644
+--- a/src/renderer/wgpu.rs
++++ b/src/renderer/wgpu.rs
+@@ -251,10 +251,36 @@ const SAMPLER_FLAGS: crate::ImageFlags = crate::ImageFlags::REPEAT_X
+ 
+ type SamplerCache = Rc<RefCell<HashMap<crate::ImageFlags, wgpu::Sampler>>>;
+ 
++/// Retention target after a flush; pipelines used in that flush are always kept.
++/// The demo binds 22 states per frame; 64 leaves room for several such sets.
++const PIPELINE_CACHE_CAPACITY: usize = 64;
++
+ #[derive(Debug)]
+ struct CachedPipeline {
+     pipeline: wgpu::RenderPipeline,
+-    accessed: bool,
++    last_used: u64,
++}
++
++/// Evicts the entries whose `last_used` flush is oldest until at most `PIPELINE_CACHE_CAPACITY` remain, but none
++/// used in `flush`: a flush that binds more states than that keeps them all.
++fn evict_least_recently_used<K: Clone + Eq + std::hash::Hash, V>(
++    cache: &mut HashMap<K, V>,
++    flush: u64,
++    last_used: impl Fn(&V) -> u64,
++) {
++    if cache.len() <= PIPELINE_CACHE_CAPACITY {
++        return;
++    }
++    let excess = cache.len() - PIPELINE_CACHE_CAPACITY;
++    let mut unused: Vec<(u64, K)> = cache
++        .iter()
++        .filter(|(_, value)| last_used(value) != flush)
++        .map(|(key, value)| (last_used(value), key.clone()))
++        .collect();
++    unused.sort_unstable_by_key(|&(stamp, _)| stamp);
++    for (_, key) in unused.into_iter().take(excess) {
++        cache.remove(&key);
++    }
+ }
+ 
+ /// WGPU renderer.
+@@ -278,6 +304,7 @@ pub struct WGPURenderer {
+     viewport_bind_group_layout: wgpu::BindGroupLayout,
+     pipeline_layout: wgpu::PipelineLayout,
+     pipeline_cache: Rc<RefCell<HashMap<PipelineState, CachedPipeline>>>,
++    flush_count: u64,
+ }
+ 
+ /// Rasterizes an image element into an offscreen canvas at the given size.
+@@ -486,6 +513,7 @@ impl WGPURenderer {
+             viewport_bind_group_layout,
+             pipeline_layout,
+             pipeline_cache: Default::default(),
++            flush_count: 0,
+         }
+     }
+ }
+@@ -509,6 +537,7 @@ impl Renderer for WGPURenderer {
+         if commands.is_empty() {
+             return None;
+         }
++        self.flush_count += 1;
+ 
+         // The bind groups recorded below hold this buffer, so it cannot grow mid-frame.
+         let needed_slots = commands.len() as u64 * UNIFORM_SLOTS_PER_COMMAND;
+@@ -596,6 +625,7 @@ impl Renderer for WGPURenderer {
+             self.bind_group_layout.clone(),
+             self.pipeline_layout.clone(),
+             self.pipeline_cache.clone(),
++            self.flush_count,
+         );
+ 
+         let mut current_render_target = RenderTarget::Screen;
+@@ -730,9 +760,11 @@ impl Renderer for WGPURenderer {
+ 
+         let command_buffer = encoder.finish();
+ 
+-        self.pipeline_cache
+-            .borrow_mut()
+-            .retain(|_, cached_pipeline| std::mem::replace(&mut cached_pipeline.accessed, false));
++        evict_least_recently_used(
++            &mut self.pipeline_cache.borrow_mut(),
++            self.flush_count,
++            |cached_pipeline| cached_pipeline.last_used,
++        );
+ 
+         Some(command_buffer)
+     }
+@@ -905,6 +937,9 @@ mod transient_cost_tests {
+     }
+ }
+ 
++#[cfg(test)]
++mod pipeline_cache_tests;
++
+ /// Two-pass Gaussian blur of `command.image` into `target_image`: horizontal
+ /// into its reserved transient scratch, then vertical into the target.
+ /// The render-loop state an image-filter pass draws through: the images,
+@@ -1828,6 +1863,9 @@ impl PipelineState {
+         pipeline_layout: &wgpu::PipelineLayout,
+         shader_module: &wgpu::ShaderModule,
+     ) -> wgpu::RenderPipeline {
++        #[cfg(test)]
++        pipeline_cache_tests::CREATED_PIPELINES.with(|count| count.set(count.get() + 1));
++
+         let vertex_entry_point = if self.render_to_texture {
+             "vs_main_texture"
+         } else {
+@@ -2228,6 +2266,7 @@ struct CommandToPipelineAndBindGroupMapper {
+     bind_group_layout: wgpu::BindGroupLayout,
+     pipeline_cache: Rc<RefCell<HashMap<PipelineState, CachedPipeline>>>,
+     pipeline_layout: wgpu::PipelineLayout,
++    flush: u64,
+ }
+ 
+ impl CommandToPipelineAndBindGroupMapper {
+@@ -2241,6 +2280,7 @@ impl CommandToPipelineAndBindGroupMapper {
+         bind_group_layout: wgpu::BindGroupLayout,
+         pipeline_layout: wgpu::PipelineLayout,
+         pipeline_cache: Rc<RefCell<HashMap<PipelineState, CachedPipeline>>>,
++        flush: u64,
+     ) -> Self {
+         Self {
+             device: device.clone(),
+@@ -2256,6 +2296,7 @@ impl CommandToPipelineAndBindGroupMapper {
+             bind_group_layout,
+             pipeline_cache,
+             pipeline_layout,
++            flush,
+         }
+     }
+ 
+@@ -2326,17 +2367,17 @@ impl CommandToPipelineAndBindGroupMapper {
+             render_pass_builder.stencil_buffer.is_some(),
+         );
+ 
+-        // An unchanged pipeline was looked up, and marked accessed, when it was bound.
++        // An unchanged pipeline was looked up, and stamped with this flush, when it was bound.
+         if render_pass_builder.current_pipeline_state.as_ref() != Some(&pipeline_state) {
+             let mut pipeline_cache = self.pipeline_cache.borrow_mut();
+             let render_pipeline = pipeline_cache.entry(pipeline_state.clone()).or_insert_with(|| {
+                 let pipeline = pipeline_state.materialize(&self.device, &self.pipeline_layout, &self.shader_module);
+                 CachedPipeline {
+                     pipeline,
+-                    accessed: false,
++                    last_used: self.flush,
+                 }
+             });
+-            render_pipeline.accessed = true;
++            render_pipeline.last_used = self.flush;
+             render_pass.set_pipeline(&render_pipeline.pipeline);
+             render_pass_builder.current_pipeline_state = Some(pipeline_state);
+         }
+diff --git a/src/renderer/wgpu/pipeline_cache_tests.rs b/src/renderer/wgpu/pipeline_cache_tests.rs
+new file mode 100644
+index 0000000..6fdb6d8
+--- /dev/null
++++ b/src/renderer/wgpu/pipeline_cache_tests.rs
+@@ -0,0 +1,262 @@
++use crate::{
++    renderer::WGPURenderer, BlendFactor, Canvas, Color, DrawCommand, FillRule, GlyphDrawCommands, ImageFilter,
++    ImageFlags, LayerEffects, Paint, Path, PixelFormat, Quad,
++};
++
++use std::{cell::Cell, collections::HashMap};
++
++use super::{evict_least_recently_used, PIPELINE_CACHE_CAPACITY};
++
++#[path = "../../../tests/common/device.rs"]
++mod device;
++use device::headless_device;
++
++thread_local! {
++    pub(super) static CREATED_PIPELINES: Cell<usize> = const { Cell::new(0) };
++}
++
++/// Large enough to hold every shape the tests draw; the tests count pipelines, not pixels.
++const SIZE: u32 = 64;
++
++fn target(device: &wgpu::Device) -> wgpu::Texture {
++    device.create_texture(&wgpu::TextureDescriptor {
++        label: Some("pipeline cache target"),
++        size: wgpu::Extent3d {
++            width: SIZE,
++            height: SIZE,
++            depth_or_array_layers: 1,
++        },
++        mip_level_count: 1,
++        sample_count: 1,
++        dimension: wgpu::TextureDimension::D2,
++        format: wgpu::TextureFormat::Rgba8Unorm,
++        usage: wgpu::TextureUsages::RENDER_ATTACHMENT,
++        view_formats: &[],
++    })
++}
++
++#[derive(Debug)]
++struct FlushCounts {
++    created: usize,
++    retained: usize,
++}
++
++fn flush_counts(
++    device: &wgpu::Device,
++    queue: &wgpu::Queue,
++    canvas: &mut Canvas<WGPURenderer>,
++    target: &wgpu::Texture,
++) -> FlushCounts {
++    let before = CREATED_PIPELINES.get();
++    let commands = canvas
++        .flush_to_output(target)
++        .expect("flush_to_output produced no command buffer for a flush with draws");
++    queue.submit([commands]);
++    // Evicted pipelines are freed once no submission holds them.
++    device
++        .poll(wgpu::PollType::wait_indefinitely())
++        .expect("device poll failed");
++    let live = device.get_internal_counters().hal.render_pipelines.read();
++    // Without the `counters` feature every counter reads zero, and the tests' comparisons would pass vacuously.
++    assert!(
++        live > 0,
++        "no live render pipelines counted; is wgpu's `counters` feature on?"
++    );
++    let retained = canvas.renderer.pipeline_cache.borrow().len();
++    assert_eq!(live as usize, retained, "live pipelines differ from cache entries");
++    FlushCounts {
++        created: CREATED_PIPELINES.get() - before,
++        retained,
++    }
++}
++
++fn rect() -> Path {
++    let mut path = Path::new();
++    path.rect(8.0, 8.0, 40.0, 40.0);
++    path
++}
++
++/// Clears the target, then draws a solid, a gradient and a scissored concave fill and a stroke.
++fn draw_frame(canvas: &mut Canvas<WGPURenderer>) {
++    canvas.clear_rect(0, 0, SIZE, SIZE, Color::white());
++    canvas.fill_path(&rect(), &Paint::color(Color::rgb(255, 0, 0)));
++    let mut circle = Path::new();
++    circle.circle(40.0, 40.0, 12.0);
++    let gradient = Paint::linear_gradient(0.0, 0.0, 64.0, 64.0, Color::black(), Color::white());
++    canvas.fill_path(&circle, &gradient);
++    canvas.stroke_path(&circle, &Paint::color(Color::rgb(0, 0, 255)).with_line_width(3.0));
++    canvas.save();
++    canvas.scissor(0.0, 0.0, 30.0, 30.0);
++    let mut concave = Path::new();
++    concave.move_to(0.0, 0.0);
++    concave.line_to(60.0, 10.0);
++    concave.line_to(10.0, 60.0);
++    concave.line_to(50.0, 50.0);
++    concave.close();
++    canvas.fill_path(&concave, &Paint::color(Color::rgb(0, 128, 0)));
++    canvas.restore();
++}
++
++/// The clear is a separate pipeline and is included in each working-set size.
++#[test]
++fn pipeline_creations_and_residency_across_capacity() {
++    let Some((device, queue)) = headless_device() else {
++        return;
++    };
++    let target = target(&device);
++    let capacity = PIPELINE_CACHE_CAPACITY;
++    let factors = [
++        BlendFactor::One,
++        BlendFactor::OneMinusSrcAlpha,
++        BlendFactor::Zero,
++        BlendFactor::SrcColor,
++        BlendFactor::OneMinusSrcColor,
++        BlendFactor::DstColor,
++        BlendFactor::OneMinusDstColor,
++        BlendFactor::SrcAlpha,
++        BlendFactor::DstAlpha,
++        BlendFactor::OneMinusDstAlpha,
++    ];
++    for states in [capacity - 1, capacity, capacity + 1, 80, 129] {
++        let mut canvas = Canvas::new(WGPURenderer::new(device.clone(), queue.clone())).expect("canvas");
++        canvas.set_size(SIZE, SIZE, 1.0);
++        let red = Paint::color(Color::rgb(255, 0, 0)).with_anti_alias(false);
++        let path = rect();
++        for round in 0..3 {
++            canvas.save();
++            for i in 0..states - 1 {
++                // No anti-aliasing: each distinct blend state needs one pipeline.
++                canvas.global_composite_blend_func_separate(
++                    factors[i % 10],
++                    factors[(i / 10) % 10],
++                    if i < 100 { BlendFactor::One } else { BlendFactor::Zero },
++                    BlendFactor::OneMinusSrcAlpha,
++                );
++                canvas.fill_path(&path, &red);
++            }
++            canvas.restore();
++            let draw = flush_counts(&device, &queue, &mut canvas, &target);
++            canvas.clear_rect(0, 0, SIZE, SIZE, Color::black());
++            let clear = flush_counts(&device, &queue, &mut canvas, &target);
++            let expected_creations = if round == 0 {
++                states
++            } else if states <= capacity {
++                0
++            } else {
++                // The clear survives into the drawing flush but is evicted at its end.
++                states - capacity + 1
++            };
++            assert_eq!(
++                draw.created + clear.created,
++                expected_creations,
++                "{states} states, round {round}: draw {draw:?}, clear {clear:?}"
++            );
++            let expected_draw_resident = if round == 0 || states > capacity {
++                states - 1
++            } else {
++                states
++            };
++            assert_eq!(draw.retained, expected_draw_resident, "{states} states, round {round}");
++            assert_eq!(clear.retained, states.min(capacity), "{states} states, round {round}");
++        }
++        drop(canvas);
++        device
++            .poll(wgpu::PollType::wait_indefinitely())
++            .expect("device poll failed");
++    }
++}
++
++/// Alternating glyph, clipped-layer, filter, screen and clear flushes reuse the
++/// whole working set after their first round.
++#[test]
++fn alternating_flushes_create_pipelines_only_in_the_first_round() {
++    let Some((device, queue)) = headless_device() else {
++        return;
++    };
++    let target = target(&device);
++    let mut canvas = Canvas::new(WGPURenderer::new(device.clone(), queue.clone())).expect("canvas");
++    canvas.set_size(SIZE, SIZE, 1.0);
++    let atlas = canvas
++        .create_image_empty(8, 8, PixelFormat::Gray8, ImageFlags::empty())
++        .expect("glyph atlas");
++    let mut clip = Path::new();
++    clip.circle(32.0, 32.0, 24.0);
++    let red = Paint::color(Color::rgb(255, 0, 0));
++
++    let mut counts = Vec::new();
++    let mut flush = |canvas: &mut Canvas<WGPURenderer>| {
++        counts.push(flush_counts(&device, &queue, canvas, &target));
++    };
++    for _ in 0..3 {
++        let glyph = Quad {
++            x0: 8.0,
++            y0: 8.0,
++            s0: 0.0,
++            t0: 0.0,
++            x1: 16.0,
++            y1: 16.0,
++            s1: 1.0,
++            t1: 1.0,
++        };
++        canvas.draw_glyph_commands(
++            GlyphDrawCommands {
++                alpha_glyphs: vec![DrawCommand {
++                    image_id: atlas,
++                    quads: vec![glyph],
++                }],
++                color_glyphs: Vec::new(),
++            },
++            &red,
++        );
++        flush(&mut canvas);
++
++        canvas.save();
++        canvas.clip_path(&clip, FillRule::NonZero);
++        assert!(canvas.begin_layer(&LayerEffects::new().with_opacity(0.5)));
++        canvas.fill_path(&rect(), &red);
++        canvas.end_layer();
++        canvas.restore();
++        flush(&mut canvas);
++
++        assert!(canvas.begin_layer(&LayerEffects::new().with_filters(&[ImageFilter::GaussianBlur { sigma: 3.0 }])));
++        canvas.fill_path(&rect(), &Paint::color(Color::rgb(0, 0, 255)));
++        canvas.end_layer();
++        flush(&mut canvas);
++
++        draw_frame(&mut canvas);
++        flush(&mut canvas);
++
++        canvas.clear_rect(0, 0, SIZE, SIZE, Color::black());
++        flush(&mut canvas);
++    }
++
++    let round = counts.len() / 3;
++    let settled = counts[round - 1].retained;
++    assert!(counts[..round].iter().map(|count| count.created).sum::<usize>() > 0);
++    for count in &counts[round..] {
++        assert_eq!(count.created, 0, "warmed flush created pipelines: {counts:?}");
++        assert_eq!(count.retained, settled, "warmed flush evicted pipelines: {counts:?}");
++    }
++}
++
++/// Up to capacity a flush evicts nothing, one past it evicts the pipeline used longest ago, and a flush never
++/// evicts what it bound itself. Before the fix a flush binding only pipeline 0 of 63 evicted the other 62.
++#[test]
++fn pipelines_are_evicted_only_past_capacity_least_recently_used_first() {
++    for len in PIPELINE_CACHE_CAPACITY - 1..=PIPELINE_CACHE_CAPACITY + 1 {
++        // Pipeline `i` was last bound in flush `i`; the current flush, a lone clear, rebinds only pipeline 0.
++        let flush = len as u64;
++        let mut cache: HashMap<usize, u64> = (0..len).map(|i| (i, i as u64)).collect();
++        cache.insert(0, flush);
++        evict_least_recently_used(&mut cache, flush, |&last_used| last_used);
++        assert_eq!(cache.len(), len.min(PIPELINE_CACHE_CAPACITY), "pipelines kept of {len}");
++        if len > PIPELINE_CACHE_CAPACITY {
++            assert!(!cache.contains_key(&1), "pipeline 1, used longest ago, was kept");
++        }
++    }
++
++    let len = PIPELINE_CACHE_CAPACITY + 1;
++    let mut cache: HashMap<usize, u64> = (0..len).map(|i| (i, 1)).collect();
++    evict_least_recently_used(&mut cache, 1, |&last_used| last_used);
++    assert_eq!(cache.len(), len, "a flush binding {len} states evicted some of them");
++}
+diff --git a/tests/common/device.rs b/tests/common/device.rs
+new file mode 100644
+index 0000000..806c847
+--- /dev/null
++++ b/tests/common/device.rs
+@@ -0,0 +1,92 @@
++//! Shared adapter and device setup for headless WGPU tests.
++#![allow(dead_code)]
++
++/// Set `FEMTOVG_REQUIRE_GPU` to turn "no adapter" from a skip into a failure:
++/// any value (`1`, `true`, `any`) requires that some adapter was found, and a
++/// backend name (`metal`, `vulkan`, `dx12`, `gl`) additionally requires that
++/// backend. CI's GPU job sets it, so the job cannot report success by quietly
++/// skipping every test on a runner where adapter creation failed.
++fn gpu_requirement() -> Option<String> {
++    std::env::var("FEMTOVG_REQUIRE_GPU")
++        .ok()
++        .map(|value| value.trim().to_ascii_lowercase())
++        .filter(|value| !value.is_empty())
++}
++
++pub fn headless_device() -> Option<(wgpu::Device, wgpu::Queue)> {
++    headless_device_with_texture_limit(None)
++}
++
++/// A device whose 2D texture limit is lowered to `limit` (a VideoCore IV
++/// reports 2048), so a laptop GPU can run what a small one would.
++pub fn headless_device_limited(limit: u32) -> Option<(wgpu::Device, wgpu::Queue)> {
++    headless_device_with_texture_limit(Some(limit))
++}
++
++fn headless_device_with_texture_limit(limit: Option<u32>) -> Option<(wgpu::Device, wgpu::Queue)> {
++    let require = gpu_requirement();
++    let instance = wgpu::Instance::default();
++    let adapter = match pollster::block_on(instance.request_adapter(&wgpu::RequestAdapterOptions {
++        power_preference: wgpu::PowerPreference::default(),
++        force_fallback_adapter: false,
++        compatible_surface: None,
++        ..Default::default()
++    })) {
++        Ok(adapter) => adapter,
++        Err(err) => {
++            assert!(
++                require.is_none(),
++                "FEMTOVG_REQUIRE_GPU is set but no wgpu adapter was found: {err}"
++            );
++            eprintln!("skipping: no wgpu adapter available ({err})");
++            return None;
++        }
++    };
++
++    // Which GPU ran the suite is the first thing anyone reading a CI failure
++    // needs; print it once per test binary rather than once per test.
++    let info = adapter.get_info();
++    static ANNOUNCE: std::sync::Once = std::sync::Once::new();
++    ANNOUNCE.call_once(|| {
++        eprintln!(
++            "wgpu adapter: {} | backend {:?} | type {:?} | driver {} {}",
++            info.name, info.backend, info.device_type, info.driver, info.driver_info
++        );
++    });
++    if let Some(required) = require.as_deref() {
++        let backend = format!("{:?}", info.backend).to_ascii_lowercase();
++        assert!(
++            matches!(required, "1" | "true" | "any") || required == backend,
++            "FEMTOVG_REQUIRE_GPU={required} but the adapter's backend is {backend}"
++        );
++    }
++
++    let (device, queue) = match pollster::block_on(adapter.request_device(&wgpu::DeviceDescriptor {
++        label: Some("femtovg test device"),
++        required_features: wgpu::Features::empty(),
++        required_limits: {
++            let mut limits = wgpu::Limits::downlevel_defaults().using_resolution(adapter.limits());
++            if let Some(limit) = limit {
++                limits.max_texture_dimension_2d = limit;
++            }
++            limits
++        },
++        experimental_features: wgpu::ExperimentalFeatures::disabled(),
++        memory_hints: wgpu::MemoryHints::MemoryUsage,
++        trace: wgpu::Trace::default(),
++    })) {
++        Ok(pair) => pair,
++        Err(err) => {
++            assert!(
++                require.is_none(),
++                "FEMTOVG_REQUIRE_GPU is set but the device request failed: {err}"
++            );
++            eprintln!("skipping: wgpu device request failed ({err})");
++            return None;
++        }
++    };
++    // A validation error must fail the test that provoked it, not scroll past
++    // in the log while the test reads back plausible-looking pixels.
++    device.on_uncaptured_error(std::sync::Arc::new(|err| panic!("wgpu uncaptured error: {err}")));
++    Some((device, queue))
++}

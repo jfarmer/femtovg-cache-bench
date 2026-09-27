@@ -1,0 +1,14 @@
+{
+  "base": {
+    "commit": "fa5d6a36818e79be1e8ea2a32eca3564e893180f",
+    "renderer_sha256": "b95cde236a73e3f03eccd9409a6c408e77df66df8eb111cd1fed11b33ded5d4b"
+  },
+  "candidate": {
+    "commit": "d5241b90032d8bfaca305d993cef30a0277f8898",
+    "renderer_sha256": "053fe784e0829280eb64e724ecdb3d00caed7230609d8525013a3b2f8074d649"
+  },
+  "repository": "https://github.com/femtovg/femtovg",
+  "archive": "femtovg-fa5d6a3.tar.gz",
+  "sha256": "41d1a8a103842fd4a5eef49788e61bb43739fa208c3896c03c41faba17d702c1",
+  "note": "Library-only base snapshot. Candidate patch preserves the current PR renderer byte-for-byte before benchmark instrumentation; common benchmark dependency feature changes follow."
+}
