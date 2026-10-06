@@ -1,0 +1,10 @@
+[package]
+name = "pipebench"
+version = "0.1.0"
+edition = "2021"
+publish = false
+description = "Times wgpu render-pipeline creation with FemtoVG's shader: new source, new blend state, recreation"
+
+[dependencies]
+wgpu = { version = "=30.0.1", features = ["wgsl"] }
+pollster = "1.0"

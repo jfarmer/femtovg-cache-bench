@@ -7,7 +7,7 @@ license = "MIT"
 description = "Reproducible FemtoVG pipeline-cache policy experiments"
 
 [workspace]
-members = ["crates/cache-policy"]
+members = ["crates/cache-policy", "pipebench"]
 exclude = ["vendor/femtovg"]
 resolver = "2"
 
