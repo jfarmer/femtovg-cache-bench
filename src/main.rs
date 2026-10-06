@@ -31,11 +31,32 @@ struct Flush {
 #[derive(Serialize)]
 struct Frame {
     phase: &'static str,
+    /// Which part of a phased workload the frame belongs to; "steady" when the workload has one part.
+    stage: &'static str,
     cpu_ms: f64,
     completed_ms: f64,
     live_pipelines: isize,
     metal_resource_bytes: Option<u64>,
     flushes: Vec<Flush>,
+}
+
+/// What one frame draws before its clear flush.
+#[derive(Clone, Copy)]
+enum Draw {
+    Mixed,
+    /// `count` pipelines including the clear pipeline, so `count - 1` blend states, numbered from `first`.
+    States { first: usize, count: usize },
+}
+
+enum Workload {
+    States(usize),
+    Mixed,
+    /// `a` pipelines for ten frames, then `b` different ones until ten frames before the end, then `a` again.
+    /// Shows what each policy does with pipelines that go unused for a long run of flushes and then come back.
+    Return { a: usize, b: usize },
+    /// Every measured frame draws `k` blend states no earlier frame used. Shows how large each policy lets the
+    /// cache grow under a stream of one-off states.
+    Scan { k: usize },
 }
 
 struct Bench {
@@ -67,20 +88,26 @@ impl Bench {
         self.flush("clear", start)
     }
 
-    fn states(&mut self, count: usize) -> Flush {
+    fn states(&mut self, first: usize, count: usize) -> Flush {
         let start = Instant::now();
         self.canvas.save();
-        for i in 0..count {
-            // 200 distinct valid blend states. Alpha factors also contribute to the pipeline key.
+        for i in first..first + count {
+            // 200 distinct valid blend states, then 1,400 more that also vary the destination alpha factor.
+            // Alpha factors also contribute to the pipeline key. Index 1600 would repeat index 0.
+            assert!(i < 1600, "the blend-state generator holds 1600 distinct states");
             self.canvas.global_composite_blend_func_separate(
                 FACTORS[i % 10],
                 FACTORS[(i / 10) % 10],
-                if i < 100 {
+                if i % 200 < 100 {
                     BlendFactor::One
                 } else {
                     BlendFactor::Zero
                 },
-                BlendFactor::OneMinusSrcAlpha,
+                if i < 200 {
+                    BlendFactor::OneMinusSrcAlpha
+                } else {
+                    FACTORS[(2 + i / 200) % 10]
+                },
             );
             self.canvas.fill_path(
                 &self.rect,
@@ -159,14 +186,13 @@ impl Bench {
         flushes.push(self.flush("screen", start));
     }
 
-    fn frame(&mut self, states: Option<usize>, phase: &'static str) -> Frame {
+    fn frame(&mut self, draw: Draw, phase: &'static str, stage: &'static str) -> Frame {
         let mut flushes = Vec::with_capacity(5);
         let start = Instant::now();
-        if let Some(count) = states {
+        match draw {
             // Include the distinct clear pipeline in the advertised working-set size.
-            flushes.push(self.states(count - 1));
-        } else {
-            self.mixed(&mut flushes);
+            Draw::States { first, count } => flushes.push(self.states(first, count - 1)),
+            Draw::Mixed => self.mixed(&mut flushes),
         }
         flushes.push(self.clear());
         let cpu_ms = start.elapsed().as_secs_f64() * 1000.0;
@@ -184,6 +210,7 @@ impl Bench {
         assert!(live_pipelines > 0, "WGPU counters must be enabled");
         Frame {
             phase,
+            stage,
             cpu_ms,
             completed_ms,
             live_pipelines,
@@ -211,7 +238,7 @@ fn main() {
     assert_eq!(
         args.len(),
         4,
-        "usage: femtovg-cache-bench POLICY STATES|mixed FRAMES"
+        "usage: femtovg-cache-bench POLICY STATES|mixed|return:A:B|scan:K FRAMES"
     );
     let policy = &args[1];
     assert_eq!(
@@ -220,14 +247,31 @@ fn main() {
         "binary/policy mismatch"
     );
     let scenario = &args[2];
-    let states = if scenario == "mixed" {
-        None
-    } else {
-        Some(scenario.parse::<usize>().unwrap())
-    };
-    assert!(states.is_none_or(|n| (2..=201).contains(&n)));
     let frames: usize = args[3].parse().unwrap();
     assert!(frames > 0);
+    let workload = if scenario == "mixed" {
+        Workload::Mixed
+    } else if let Some(sizes) = scenario.strip_prefix("return:") {
+        let (a, b) = sizes.split_once(':').expect("return:A:B");
+        let (a, b) = (a.parse().unwrap(), b.parse().unwrap());
+        // The two sets share only the clear pipeline, so the generator must hold a + b - 1 states.
+        assert!(a >= 2 && b >= 2 && a + b - 1 <= 201, "return:A:B needs 2 <= A, B and A + B - 1 <= 201");
+        assert!(frames >= 21, "return:A:B needs at least 21 frames: ten before, one or more away, ten after");
+        Workload::Return { a, b }
+    } else if let Some(k) = scenario.strip_prefix("scan:") {
+        let k: usize = k.parse().unwrap();
+        assert!(k >= 1 && (frames + 1) * k < 1600, "scan:K needs (FRAMES + 1) * K below 1600");
+        Workload::Scan { k }
+    } else {
+        let n = scenario.parse::<usize>().unwrap();
+        assert!((2..=201).contains(&n));
+        Workload::States(n)
+    };
+    let steady = match workload {
+        Workload::States(count) | Workload::Return { a: count, .. } => Draw::States { first: 0, count },
+        Workload::Scan { k } => Draw::States { first: 0, count: k + 1 },
+        Workload::Mixed => Draw::Mixed,
+    };
     let instance = wgpu::Instance::default();
     let adapter =
         pollster::block_on(instance.request_adapter(&wgpu::RequestAdapterOptions::default()))
@@ -272,8 +316,8 @@ fn main() {
     };
     let before_resource_bytes = metal_resource_bytes(&bench.device);
     let mut results = Vec::with_capacity(frames + 6);
-    results.push(bench.frame(states, "cold"));
-    if let Some(count) = states {
+    results.push(bench.frame(steady, "cold", "steady"));
+    if let Draw::States { count, .. } = steady {
         assert_eq!(
             results[0].flushes.iter().map(|f| f.created).sum::<u64>(),
             count as u64,
@@ -281,10 +325,28 @@ fn main() {
         );
     }
     for _ in 0..5 {
-        results.push(bench.frame(states, "warmup"));
+        results.push(bench.frame(steady, "warmup", "steady"));
     }
-    for _ in 0..frames {
-        results.push(bench.frame(states, "measured"));
+    for index in 0..frames {
+        let (draw, stage) = match workload {
+            Workload::Return { a, b } => {
+                // The away set starts where the first set's blend states end, so the two sets differ.
+                let away = Draw::States { first: a - 1, count: b };
+                if index < 10 {
+                    (steady, "before")
+                } else if index < frames - 10 {
+                    (away, "away")
+                } else if index == frames - 10 {
+                    (steady, "return")
+                } else {
+                    (steady, "after")
+                }
+            }
+            // The cold and warm-up frames used states 0..k, so the first measured frame starts at k.
+            Workload::Scan { k } => (Draw::States { first: (index + 1) * k, count: k + 1 }, "scan"),
+            _ => (steady, "steady"),
+        };
+        results.push(bench.frame(draw, "measured", stage));
     }
     let mut usage = std::mem::MaybeUninit::<libc::rusage>::uninit();
     // getrusage initializes the buffer on success. macOS reports bytes, Linux reports KiB.

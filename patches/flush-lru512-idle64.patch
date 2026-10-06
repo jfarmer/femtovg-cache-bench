@@ -1,0 +1,38 @@
+--- a/src/renderer/wgpu.rs
++++ b/src/renderer/wgpu.rs
+@@ -263,9 +263,14 @@
+     }
+ }
+ 
+-/// Pipelines kept between flushes, so a flush that draws little (a lone clear) doesn't evict the frame before it. A
+-/// frame of examples/demo.rs binds 22 states; 64 holds a few such sets.
+-const PIPELINE_CACHE_CAPACITY: usize = 64;
++/// Pipelines kept between flushes. The named composite operations can produce about 480 distinct pipelines across
++/// the render-target formats, so a cache this size never evicts for them; only custom blend factors can fill it.
++const PIPELINE_CACHE_CAPACITY: usize = 512;
++
++/// Flushes a pipeline stays protected after its last use, even above `PIPELINE_CACHE_CAPACITY`. A frame is several
++/// flushes when the app draws layers, so this keeps a whole frame's pipelines, and views that alternate within a
++/// few frames.
++const PIPELINE_RECENT_FLUSHES: u64 = 64;
+ 
+ #[derive(Debug)]
+ struct CachedPipeline {
+@@ -274,7 +279,7 @@
+ }
+ 
+ /// Evicts the entries whose `last_used` flush is oldest until at most `PIPELINE_CACHE_CAPACITY` remain, but none
+-/// used in `flush`: a flush that binds more states than that keeps them all.
++/// used within the last `PIPELINE_RECENT_FLUSHES` flushes: a frame that binds more states than that keeps them all.
+ fn evict_least_recently_used<K: Clone + Eq + std::hash::Hash, V>(
+     cache: &mut HashMap<K, V>,
+     flush: u64,
+@@ -287,7 +292,7 @@
+     let mut unused: Vec<(u64, K)> = cache
+         .iter()
+         .map(|(key, value)| (last_used(value), key.clone()))
+-        .filter(|&(stamp, _)| stamp != flush)
++        .filter(|&(stamp, _)| flush.saturating_sub(stamp) > PIPELINE_RECENT_FLUSHES)
+         .collect();
+     unused.sort_unstable_by_key(|&(stamp, _)| stamp);
+     for (_, key) in unused.into_iter().take(excess) {

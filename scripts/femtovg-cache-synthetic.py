@@ -12,7 +12,7 @@ import shutil
 import statistics
 import subprocess
 
-from common import ROOT, BENCH, ARCHIVE, BINS, SOURCE, prepare_source, build_lock, input_hashes, verify_build
+from common import ROOT, BENCH, ARCHIVE, BINS, PATCHES, SOURCE, prepare_source, build_lock, input_hashes, verify_build
 POLICIES = ("upstream", "pr343", "flush-lru64", "strict-lru128")
 SCENARIOS = ("63", "64", "65", "80", "129", "mixed")
 
@@ -81,6 +81,7 @@ def summarize(records):
 
 
 def main():
+    global POLICIES, SCENARIOS
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--build", action="store_true")
     parser.add_argument("--build-only", action="store_true")
@@ -88,7 +89,19 @@ def main():
     parser.add_argument("--runs", type=int, default=10)
     parser.add_argument("--frames", type=int, default=100)
     parser.add_argument("--out", type=Path, default=ROOT / "runs/femtovg-cache-synthetic")
+    parser.add_argument("--policies", default=",".join(POLICIES),
+                        help="exactly four policy names from common.PATCHES, comma-separated; "
+                             "the run order is a four-way Latin square")
+    parser.add_argument("--scenarios", default=",".join(SCENARIOS),
+                        help="comma-separated workloads: a pipeline count, mixed, or return:A:B")
     args = parser.parse_args()
+    SCENARIOS = tuple(args.scenarios.split(","))
+    POLICIES = tuple(args.policies.split(","))
+    if len(POLICIES) != 4 or len(set(POLICIES)) != 4:
+        parser.error("--policies needs exactly four distinct policies")
+    unknown = [policy for policy in POLICIES if policy not in PATCHES]
+    if unknown:
+        parser.error(f"unknown policies: {unknown}; known: {', '.join(PATCHES)}")
     if args.summarize_only:
         with gzip.open(args.out / "runs.jsonl.gz", "rt") as raw:
             records = [json.loads(line) for line in raw]

@@ -18,7 +18,9 @@ BINS = ROOT / "target/bench-bins"
 PATCHES = {
     "upstream": (),
     "pr343": ("pr343.patch",),
+    "pr371": ("pr371.patch",),
     "flush-lru64": ("flush-lru64.patch",),
+    "flush-lru512-idle64": ("flush-lru64.patch", "flush-lru512-idle64.patch"),
     "strict-lru128": ("strict-lru128.patch",),
     "policy-study": ("strict-lru128.patch", "policy-study.patch"),
 }
